@@ -1,0 +1,164 @@
+<h2>Exibe detalhe de uma promissória</h2>
+
+<%
+lote = @promissoria.venda.lote
+parcela = format('%s-%s/%s - %s', @promissoria.get_nome_lote,
+  @promissoria.num,
+  @promissoria.num_total,
+  Codigo.get_status(@promissoria.cod_tipo_parcela)
+)
+
+v = @promissoria.get_valores Time.now
+
+num_boletos = @promissoria.boletos.size
+
+pagamentos = []
+retornos = []
+%>
+
+
+<%=
+link_to(format("Lote %s-%s", lote.area.nome, lote.numero.to_s + lote.subdivisao.to_s),
+  :controller => "lotes",
+  :action => "show",
+  :id => @promissoria.venda.lote.id
+)
+%>
+
+<%= error_messages_for :promissoria %>
+
+<hr/>
+
+
+
+<table cellpadding="0" cellspacing="0" border="0">
+
+  <tr>
+    <td>Parcela:
+      <%=h parcela %>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Status:
+      <%=h @promissoria.get_status %>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Vencimento:
+      <%=h format("%s [%s]",
+        @promissoria.data_vencimento.strftime("%d/%m/%Y"),
+        v[:data_pagamento].nil? ? '' : Biblioteca::format_data(v[:data_pagamento])) %>
+    </td>
+  </tr>
+  <tr><td><hr/></td></tr>
+  <tr>
+    <td>
+      <%=h "valor original: #{Biblioteca::format_currency v[:valor_original]}" %><br/>
+      <%=h "valor vencimento: #{Biblioteca::format_currency v[:valor_vencimento]}" %><br/>
+      <%=h "valor mora: #{Biblioteca::format_currency v[:valor_mora]}" %><br/>
+      <%=h "valor corrigido: #{Biblioteca::format_currency v[:valor_contrato_corrigido]}" %><br/>
+      <%=h "valor pago: #{Biblioteca::format_currency v[:valor_pago]}" %><br/>
+    </td>
+  </tr>
+</table>
+
+
+
+<hr/>
+<p align="center"> boletos 
+[<small>
+  <%=
+  link_to("novo boleto",
+    :controller => "boletos",
+    :action => "choice_novo",
+    :lote => @promissoria.venda.lote.id,
+    :promissoria => @promissoria.id
+  )
+%></small>]</p>
+
+
+<table cellpadding="4" cellspacing="1" border="1">
+  <tr>
+    <th>Emissão</th>
+    <th>Vencimento</th>
+	<th>Pagamento</th>
+    <th>Valor</th>
+    <th>Nosso número</th>
+    <th>Seu número</th>
+    <th>Status</th>
+  </tr>
+
+
+  <% (@promissoria.boletos.find_all {|b| b.status != 40}).each do |boleto| %>
+    <tr>
+      <td><%=h boleto.data_emissao.strftime("%d/%m/%Y") %> </td>
+      <td><%=h boleto.data_vencimento.strftime("%d/%m/%Y") %> </td>
+	  <td><%=h !boleto.pagamento.nil? ? boleto.pagamento.data_pagamento.strftime("%d/%m/%Y") : '' %> </td>
+      <td><%=h Biblioteca::format_currency(boleto.valor_titulo) %> </td>
+      <td><%=h boleto.nosso_numero %> </td>
+      <td><%=
+        link_to(boleto.seu_numero,
+          :controller => "boletos",
+          :action => "pagamento",
+          :id => boleto.id
+        )
+      %>
+      </td>
+      <td><%=h Codigo::get_status(boleto.status) %> </td>
+    </tr>
+    <%
+    if !boleto.pagamento.nil? then
+      pagamentos.push boleto.pagamento
+    end
+    retorno = Retorno::get_retorno(boleto.nosso_numero)
+    if !retorno.nil? then
+      retornos.push retorno
+    end
+  %>
+  <% end %>
+</table>
+
+
+
+<hr/>
+<p align="center"> pagamentos
+  <% if num_boletos == 0 then %>
+
+    [<small>
+      <%=
+      link_to("pagamento sem boleto",
+        :controller => "promissorias",
+        :action => "pagamento",
+        :id => @promissoria.id
+      )
+    %></small>]
+  <% end %>
+</p>
+<table cellpadding="6" cellspacing="1" border="1">
+  <% for pagamento in pagamentos %>
+    <tr>
+      <td><%=h pagamento.data_pagamento.strftime("%d/%m/%Y") %> </td>
+      <td><%=h Biblioteca::format_currency(pagamento.valor_pago) %> </td>
+      <td><%=h Codigo::get_status(pagamento.status) %> </td>
+      <td><%=h pagamento.comentarios %> </td>
+    </tr>
+  <% end %>
+</table>
+
+
+
+<hr/>
+<p align="center"> Sicob </p>
+<table cellpadding="6" cellspacing="1" border="1">
+  <% for retorno in retornos %>
+    <tr>
+      <td><%=h retorno.data_pagamento.strftime("%d/%m/%Y") %> </td>
+      <td><%=h retorno.data_credito.strftime("%d/%m/%Y") %> </td>
+      <td><%=h Biblioteca::format_currency(retorno.valor) %> </td>
+      <td><%=h Biblioteca::format_currency(retorno.credito) %> </td>
+      <td><%=h retorno.arquivo %> </td>
+    </tr>
+  <% end %>
+</table>

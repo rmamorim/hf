@@ -1,0 +1,212 @@
+<h2>Sistema Hansa Fly</h2>
+<hr/>
+
+<table>
+
+  <tr><td><%=
+      link_to("Área A",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 1)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área B",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 2)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área C",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 30)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área D",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 5)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área E",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 6)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área G",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 7)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Área J",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 3)
+    %></td></tr>
+
+
+  <tr><td><%=
+      link_to("Área M",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 8)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Casas",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 4)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Sítio Cotia",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 9)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Desmembramento",
+              :controller => "lotes",
+              :action => "index",
+              :area_id => 31)
+  %></td></tr>
+
+  <tr><td><%=
+        link_to("Domus",
+                :controller => "lotes",
+                :action => "index",
+                :area_id => 32)
+  %></td></tr>
+
+  <tr><td><hr/></td></tr>
+
+  <tr><td><%=
+      link_to("Lotes Disponíveis",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 9)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Lotes Reservados",
+        :controller => "lotes",
+        :action => "index",
+        :area_id => 9)
+    %></td></tr>
+
+  <tr><td><hr/></td></tr>
+
+  <tr><td><%=
+      link_to("Gera boletos do Mês",
+        :controller => "boletos",
+        :action => "gera_mes",
+        :id => 1)
+    %></td></tr>
+  <tr><td><%=
+      link_to("Gera boletos avulsos",
+        :controller => "boletos",
+        :action => "gera_avulsos",
+        :id => 1)
+    %></td></tr>
+
+
+  <tr><td><hr/></td></tr>
+
+  <tr><td><%=
+      link_to("Retorno CEF",
+        :controller => "retorno",
+        :action => "index",
+        :id => 1)
+    %></td></tr>
+
+  <tr>
+    <td>
+      <%=
+      link_to("Títulos recebidos na CEF (mês)",
+        :controller => "recebidos_cef_mes",
+        :action => "myshow",
+        :year => 2010,
+	:month => 1,
+	:day => 1
+      )
+    %>
+    </td>
+  </tr>
+
+  <tr><td><%=
+      link_to("Faturamento (mês)",
+        :controller => "faturamento",
+        :action => "myshow",
+        :year => 2010,
+	:month => 1,
+	:day => 1
+      )
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Inadimplência",
+        :controller => "inadimplencia",
+        :action => "index",
+        :id => 1)
+    %></td></tr>
+
+  <tr><td><hr/></td></tr>
+
+  <tr><td><%=
+      link_to("Gerência de Categorias/Códigos",
+        :controller => "categorias",
+        :action => "index",
+        :id => 1)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Cadastra índice de correção monetária",
+        :controller => "idxpoupancas",
+        :action => "index")
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Calcula índice de correção monetária entre 2 datas",
+        :controller => "idxpoupancas",
+        :action => "calcula")
+    %></td></tr>
+
+
+  <tr>
+    <td><a href="http://www.portalbrasil.eti.br/poupanca_mensal.htm">Indices da Caderneta de Poupança</a> </td>
+  </tr>
+
+  <tr><td><hr/></td></tr>
+
+  <tr><td><%=
+      link_to("Testa integridade",
+        :controller => "teste",
+        :action => "index",
+        :id => 1)
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Grava backup",
+        :controller => "home",
+        :action => "backup")
+    %></td></tr>
+
+  <tr><td><%=
+      link_to("Restore backup",
+        :controller => "home",
+        :action => "restore")
+    %></td></tr>
+
+
+</table>
+

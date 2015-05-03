@@ -1,0 +1,141 @@
+  (type.ps) runlibfile
+  (unit.ps) runlibfile
+  (IsoLatin.enc) runlibfile
+  /default_encoding IsoLatin def  
+<< /Duplex false /Tumble false >> setpagedevice
+/pagesize [612 792]  def
+/margin 3 dict def margin begin /top 0 cm  def /right 0 cm  def /bottom 0 cm  def /left	0 cm  def end
+(paper.ps) runlibfile
+   [ /Producer (Ruby Ghostscript - RGhost v0.8.7)  /DOCINFO pdfmark   /rows_per_page 80 def  /count_pages 10 def  /row_height 0.4 cm  def  /row_padding 0.1 cm  def    (basic.ps) runlibfile
+  (cursor.ps) runlibfile
+  (rectangle.ps) runlibfile
+  (font.ps) runlibfile
+  (textarea.ps) runlibfile
+  (horizontal_line.ps) runlibfile
+  (vertical_line.ps) runlibfile
+  (callbacks.ps) runlibfile
+  (show.ps) runlibfile
+  (eps.ps) runlibfile
+  (jpeg.ps) runlibfile
+  (gif.ps) runlibfile
+  (begin_document.ps) runlibfile
+  (datagrid.ps) runlibfile
+  (text.ps) runlibfile
+  (frame.ps) runlibfile
+  (link.ps) runlibfile
+  (rect_link.ps) runlibfile
+    limit_left  current_row  moveto  
+/_pre{
+ /Courier encoding_font
+/Courier-encoding exch definefont pop
+/Courier-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h4{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 11 scalefont setfont  0 setgray 
+} bind def 
+
+/_big{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 10 scalefont setfont  0 setgray 
+} bind def 
+
+/_h5{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 10 scalefont setfont  0 setgray 
+} bind def 
+
+/_b{
+ /Helvetica-Bold encoding_font
+/Helvetica-Bold-encoding exch definefont pop
+/Helvetica-Bold-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_font1{
+ /TimesBold encoding_font
+/TimesBold-encoding exch definefont pop
+/TimesBold-encoding findfont 12 scalefont setfont  0.0 0.0 0.0 setrgbcolor 
+} bind def 
+
+/_small{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 7 scalefont setfont  0 setgray 
+} bind def 
+
+/_title{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 20 scalefont setfont  0 setgray 
+} bind def 
+
+/_span{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_font2{
+ /Times encoding_font
+/Times-encoding exch definefont pop
+/Times-encoding findfont 12 scalefont setfont  0.0 0.0 0.0 setrgbcolor 
+} bind def 
+
+/_h1{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 14 scalefont setfont  0 setgray 
+} bind def 
+
+/_i{
+ /Helvetica-Oblique encoding_font
+/Helvetica-Oblique-encoding exch definefont pop
+/Helvetica-Oblique-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_bold{
+ /Helvetica-Bold encoding_font
+/Helvetica-Bold-encoding exch definefont pop
+/Helvetica-Bold-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_font3{
+ /Arial encoding_font
+/Arial-encoding exch definefont pop
+/Arial-encoding findfont 4 scalefont setfont  0.43921568627451 0.43921568627451 0.43921568627451 setrgbcolor 
+} bind def 
+
+/_h2{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 13 scalefont setfont  0 setgray 
+} bind def 
+
+/_normal{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h3{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 12 scalefont setfont  0 setgray 
+} bind def 
+
+/_bi{
+ /Helvetica-BoldOblique encoding_font
+/Helvetica-BoldOblique-encoding exch definefont pop
+/Helvetica-BoldOblique-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+   (begin_document.ps) runlibfile
+  limit_left  current_row  moveto    gsave 1.0 1.0 1.0 setrgbcolor fill grestore   2 setlinewidth  0 setlinejoin 0 setlinecap 0.0705882352941176 0.203921568627451 0.337254901960784 setrgbcolor  0.05 cm  0 cm  moveto  0.05 cm  27.94 cm  lineto  21.59 cm  0 cm  moveto  21.59 cm  27.94 cm  lineto  1.4 cm  24.835 cm  moveto  beging  _font1 (Dirlei Queiroz Nogueira)  show_left  endg  1.4 cm  24.327 cm  moveto  beging  _font2 (Rua Dr. Oliveira, 50)  show_left  endg  1.4 cm  23.819 cm  moveto  beging  _font2 (Pimenteiras - Teresopolis - RJ)  show_left  endg  1.4 cm  23.311 cm  moveto  beging  _font2 (25.965-175)  show_left  endg  10.2392 cm  23.2602 cm  moveto  beging  _font3 ()  show_right  endg  12.06 cm  24.835 cm  moveto  beging  _font1 (Fernando Antônio Victorino Correa)  show_left  endg  12.06 cm  24.327 cm  moveto  beging  _font2 (Est. Água Grande, 1525 - bloco 17 B - apto 103)  show_left  endg  12.06 cm  23.819 cm  moveto  beging  _font2 (Vista Alegre - Rio de Janeiro - RJ)  show_left  endg  12.06 cm  23.311 cm  moveto  beging  _font2 (21.230-354)  show_left  endg  20.8992 cm  23.2602 cm  moveto  beging  _font3 ()  show_right  endg  1.4 cm  21.445 cm  moveto  beging  _font1 (Gecimar de Morais Camilo)  show_left  endg  1.4 cm  20.937 cm  moveto  beging  _font2 (Rua Guapi, 65)  show_left  endg  1.4 cm  20.429 cm  moveto  beging  _font2 (Bananal - Guapimirim - RJ)  show_left  endg  1.4 cm  19.921 cm  moveto  beging  _font2 (25.940-000)  show_left  endg  10.2392 cm  19.8702 cm  moveto  beging  _font3 ()  show_right  endg  12.06 cm  21.445 cm  moveto  beging  _font1 (José de Lucas)  show_left  endg  12.06 cm  20.937 cm  moveto  beging  _font2 (Rua Álvaro Dias, 141 - bloco A 203 - Jd Guanabara)  show_left  endg  12.06 cm  20.429 cm  moveto  beging  _font2 (Ilha do Governador - Rio de Janeiro - RJ)  show_left  endg  12.06 cm  19.921 cm  moveto  beging  _font2 (21.940-510)  show_left  endg  20.8992 cm  19.8702 cm  moveto  beging  _font3 ()  show_right  endg  1.4 cm  18.055 cm  moveto  beging  _font1 (Silvio Ned Braga Siqueira )  show_left  endg  1.4 cm  17.547 cm  moveto  beging  _font2 (Estrada Imperial, 2380)  show_left  endg  1.4 cm  17.039 cm  moveto  beging  _font2 (Monte Oliveti - Guapimirim - RJ)  show_left  endg  1.4 cm  16.531 cm  moveto  beging  _font2 (25.940-000)  show_left  endg  10.2392 cm  16.4802 cm  moveto  beging  _font3 ()  show_right  endg  12.06 cm  18.055 cm  moveto  beging  _font1 (Silvio Pereira da Silva)  show_left  endg  12.06 cm  17.547 cm  moveto  beging  _font2 (Rua Tenente Luiz Meireles, 1975)  show_left  endg  12.06 cm  17.039 cm  moveto  beging  _font2 (Bom Retiro - Teresopolis - RJ)  show_left  endg  12.06 cm  16.531 cm  moveto  beging  _font2 (25.954-000)  show_left  endg  20.8992 cm  16.4802 cm  moveto  beging  _font3 ()  show_right  endg  
+
+ after_page_create  callback  after_document_create  showpage  
+%%EOF  
+
+  

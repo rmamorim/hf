@@ -1,0 +1,24 @@
+
+<h2>Gerado novo Boleto com sucesso!</h2>
+
+
+<hr/>
+<br/>
+
+<table cellpadding="2" cellspacing="1" border="1">
+
+  <%
+  @boletos.sort{|a,b| b.attributes['id'] <=> a.attributes['id']}.each do |boleto|
+  %>
+    <tr>
+      <td><%= boleto.seu_numero %> </td>
+      <td><%= Codigo.get_status boleto.promissoria.cod_tipo_parcela %> </td>
+      <td><%= boleto.nosso_numero %> </td>
+      <td><%= boleto.data_vencimento.to_date %> </td>
+      <td><%= boleto.promissoria.data_vencimento %> </td>
+      <td><%= boleto.valor_titulo.to_currency(:locale => :en) %> </td>
+
+
+    </tr>
+  <%  end %>
+</table>

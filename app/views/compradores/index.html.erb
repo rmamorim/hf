@@ -1,0 +1,63 @@
+<h3>Compradores  </h3>
+<h4><%= @venda.lote.to_label %> - <%=  Biblioteca::format_data @venda.get_data_venda %> </h4>
+<%=
+link_to("Retornar",
+  :controller => "lotes",
+  :action => "vendas",
+  :id => @venda.lote.id
+)
+%>
+<br/>
+<hr/>
+
+<table>
+  <tr>
+    <th align="left">Comprador</th>
+  </tr>
+
+  <% for comprador in @compradores %>
+    <tr>
+      <td align="left">
+        <%=h comprador.pessoa.nome %>
+      </td>
+      <td><small>
+      <%=    link_to("[x]",
+          :controller => "compradores",
+          :action => "destroy",
+          :id => comprador.id
+        )
+      %>
+        </small></td>
+    </tr>
+  <% end %>
+</table>
+
+<br/>
+<br/>
+<hr/>
+
+<% form_for :comprador, :url => {:action => "create", :id => @venda.id } do |f| %>
+
+  <p>
+    <%=    link_to("Nova Pessoa",
+      :controller => "pessoas",
+      :action => "new",
+      :venda => @venda.id
+    )
+  %></p>
+  <p>
+    <%=
+    @cods_pessoa = Pessoa.find(:all, :order => "nome").map {|u| [u.nome, u.id] }
+    f.select(:pessoa_id, @cods_pessoa)
+  %>
+    <%= f.submit "Inserir" %>
+  </p>
+
+<% end %>
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+<h1>Novo lote</h1>
+
+<%= error_messages_for :lote %>
+
+<% form_for(@lote) do |f| %>
+  <p>
+    <b>Número</b><br />
+    <%= f.text_field :numero %>
+  </p>
+
+  <p>
+    <b>Superficie</b><br />
+    <%= f.text_field :superficie %>
+  </p>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', lotes_path %>

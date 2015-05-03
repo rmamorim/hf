@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  status: MyString
+  ordem: 1
+  categoria: 
+
+two:
+  status: MyString
+  ordem: 1
+  categoria: 

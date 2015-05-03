@@ -1,0 +1,42 @@
+<h1>Gera boletos do mes</h1>
+<h3><%=h format("%s/%s", @month, @year) %></h3>
+
+
+<%= error_messages_for :boleto %>
+
+<br/>
+<hr/>
+
+<% for d in @dados %>
+<%=h d %> <br/>
+<% end %>
+
+<hr/>
+
+
+
+<hr/>
+<br/>
+
+<table cellpadding="2" cellspacing="1" border="1">
+  <tr>
+    <%
+    @confere[0].attributes.each do |c,v|
+    %>
+      <th> <%=h c %> </th>
+    <%  end %>
+  </tr>
+
+  <%
+  @confere.sort{|a,b| b.attributes['id'].nil? ? 0 : b.attributes['data_vencimento'] <=> a.attributes['data_vencimento']}.each do |e|
+  %>
+    <tr>
+    <%
+    e.attributes.each do |c,v|
+    %>
+    <td> <%=h v %> </td>
+    <%  end %>
+    </tr>
+  <%  end %>
+</table>
+

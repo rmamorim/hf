@@ -1,0 +1,29 @@
+<h1>Listagem de Parcelas</h1>
+
+<table>
+  <tr>
+    <th>Parcela</th>
+    <th>Número</th>
+  </tr>
+
+<% for parcela in @parcelas %>
+  <tr>
+    <td align="center"><%=h parcela.id %></td>
+    <td align="center"><%=h parcela.numero %></td>
+    
+    <td><%= link_to 'Show', parcela %></td>
+    <td><%= link_to 'Edit', edit_parcela_path(parcela) %></td>
+    <td><%= link_to 'Destroy', parcela, :confirm => 'Are you sure?', :method => :delete %></td>
+
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+
+<%= link_to 'Nova Parcela', new_parcela_path %>
+
+    
+    
+

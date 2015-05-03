@@ -1,0 +1,35 @@
+<h1>Gera boletos do mes</h1>
+<h3><%=h format("%s/%s", @month, @year) %></h3>
+
+
+<%= error_messages_for :boleto %>
+
+<br/>
+<hr/>
+
+<% for d in @dados %>
+<%=h d %> <br/>
+<% end %>
+
+<hr/>
+
+
+
+<hr/>
+<br/>
+
+
+<table cellpadding="2" cellspacing="1" border="1">
+  <%
+  @promissorias.sort{|a,b| b.attributes['id'].nil? ? 0 : b.attributes['data_vencimento'] <=> a.attributes['data_vencimento']}.each do |p|
+  %>
+    <tr>
+      <td><%= p.venda.lote.to_label %> </td>
+      <td><%= "#{p.num}-#{p.num_total}" %> </td>
+      <td><%= Codigo.get_status p.cod_tipo_parcela %> </td>
+      <td><%= p.data_vencimento %> </td>
+      <td><%= Codigo.get_status p.cod_status %> </td>
+
+    </tr>
+  <%  end %>
+</table>

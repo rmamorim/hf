@@ -1,0 +1,2 @@
+class RetornosController < ApplicationController
+end

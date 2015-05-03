@@ -1,0 +1,25 @@
+<h2>Clientes com parcelas em atraso</h2>
+
+<table>
+  <tr>
+    <th>Lote</th>
+    <th>Cliente</th>
+    <th>Qtd Parcelas</th>
+    <th>Soma Parcelas</th>
+  </tr>
+
+<% for l in @lista %>
+  <tr>
+    <td><%= Biblioteca::format_area_lote l.area, l.numero %></td>
+    <td><%= l.cliente %></td>
+    <td align="right"><%= l.parcelas_atrasadas %></td>    
+    <td align="right"><%= Biblioteca::format_currency l.valor_total %></td>
+  </tr>
+<% end %>
+</table>
+
+
+
+<br />
+
+

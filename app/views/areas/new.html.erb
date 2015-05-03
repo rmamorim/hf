@@ -1,0 +1,21 @@
+<h1>New area</h1>
+
+<%= error_messages_for :area %>
+
+<% form_for(@area) do |f| %>
+  <p>
+    <b>Nome</b><br />
+    <%= f.text_field :nome %>
+  </p>
+
+  <p>
+    <b>Superficie</b><br />
+    <%= f.text_field :superficie %>
+  </p>
+
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', areas_path %>

@@ -1,0 +1,111 @@
+<h1>Nova Venda</h1>
+
+<%= error_messages_for :venda %>
+
+
+<% form_for :venda, :url => {:action => "create", :id => @lote.id } do |f| %>
+
+  <table cellpadding="2" cellspacing="2" border="0">
+
+    <tr>
+      <td>Comprador</td>
+      <td>
+        <%=
+        @cods_pessoa = Pessoa.find(:all, :order => "nome").map {|u| [u.nome, u.id] }
+        f.select(:pessoa_id, @cods_pessoa)
+      %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Data do contrato</td>
+      <td>
+        <%= f.date_select(:data_contrato, :order => [:day, :month, :year], :include_blank => true, :start_year => 1995, :use_month_numbers => true) %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Data da escritura</td>
+      <td>
+        <%= f.date_select(:data_escritura, :order => [:day, :month, :year], :include_blank => true, :start_year => 1995, :use_month_numbers => true) %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Status</td>
+      <td>
+        <%=
+        @cods_status = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 8" ).map {|u| [u.status, u.id] }
+        f.select(:cod_status, @cods_status)
+      %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Corretor</td>
+      <td>
+        <%=
+        @cods_corretor = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 2" ).map {|u| [u.status, u.id] }
+        f.select(:cod_corretor, @cods_corretor)
+      %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Valor de venda</td>
+      <td>
+        <%= f.text_field :valor %>
+      </td>
+    </tr>
+
+    <tr>
+      <td> <%= f.check_box(:correc_poup)  %>  Correção monetária</td>
+      <td>
+        <%=
+        @cods_correcao = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 6" ).map {|u| [u.status, u.id] }
+        f.select(:tipo_correcao, @cods_correcao)
+      %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Dias de carência</td>
+      <td>
+        <%= f.text_field :dias_carencia, :value => 0, :size => 2 %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Multa</td>
+      <td>
+        <%= f.text_field :multa, :value => 2, :size => 2 %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Juros</td>
+      <td>
+        <%= f.text_field :juros, :value => 1, :size => 2 %>
+      </td>
+    </tr>
+
+      <tr>
+          <td>Primeira parcela a atualizar</td>
+          <td>
+              <%= f.text_field :primeira_parcela_atualizar, :value => 13, :size => 2 %>
+          </td>
+      </tr>
+
+
+  </table>
+
+
+  <p>
+    <%= f.submit "Inserir" %>
+  </p>
+
+
+<% end %>
+
+
+

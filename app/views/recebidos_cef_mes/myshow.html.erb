@@ -1,0 +1,83 @@
+<h2>Pagamentos de titulos recebidos na CEF - Myshow.</h2>
+
+<p> <%=h format('%s/%s - Total = %s', @month, @year, Biblioteca::to_my_moeda(@total)) %> </p>
+
+<br/>
+
+
+<table border="1">
+
+  <tr>
+    <td align="center">Data</td>
+    <td align="center">Forma</td>
+    <td align="center">Parcela</td>
+    <td align="center">Pagamento</td>
+    
+  </tr>
+
+  <%
+    data = nil
+    forma = nil
+    total0 = 0
+    total = 0
+
+%>
+
+
+  <%  @lista.each do |l| %>
+    <tr>
+
+      <%
+
+      data0 = data
+      forma0 = forma
+      total0 = total
+
+      data = l[0]
+      forma = l[1]
+      valor = l[2]
+      parcela = l[3]
+
+      flag_data = data == data0 ? false : true
+      flag_forma = forma == forma0 ? false : true
+      if (flag_data || flag_forma) then
+        total0 = total
+        total = valor
+        if total0 != 0
+          then
+
+%>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td align="right" bgcolor="lightgreen"> <%=h Biblioteca::to_my_moeda(total0) %> </td>
+      
+    </tr>
+<%
+        end
+      else
+        total = total + valor
+      end
+
+    %>  
+
+      <td> <%=h flag_data ? data : '' %> </td>
+      <td> <%=h flag_forma || flag_data ? forma : '' %> </td>
+      <td align="center"> <%=h parcela %> </td>
+      <td align="right"> <%=h Biblioteca::to_my_moeda(valor) %> </td>
+      
+    </tr>
+  <% end %>
+
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td align="right" bgcolor="lightgreen"> <%=h Biblioteca::to_my_moeda(total) %> </td>
+      
+    </tr>
+
+</table>
+
+<br/>

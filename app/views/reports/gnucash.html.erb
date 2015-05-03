@@ -1,0 +1,20 @@
+<h2>Sistema Hansa Fly</h2>
+<hr/>
+
+
+<table cellpadding="2" cellspacing="1" border="1">
+
+
+  <%
+  @d.each do |l|
+  %>
+    <tr>
+    <%
+    l.each do |c|
+    %>
+    <td> <%=h c %> </td>
+    <%  end %>
+    </tr>
+  <%  end %>
+
+</table>

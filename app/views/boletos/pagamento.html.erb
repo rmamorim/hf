@@ -1,0 +1,84 @@
+<h2>Registra pagamento de boleto</h2>
+
+
+
+<%= error_messages_for :boleto %>
+
+<%=h @boleto.nosso_numero%> <hr/>
+
+
+<%
+  data_default = Time.now
+  v = @boleto.promissoria.get_valores data_default
+
+
+%>
+
+<br/>
+<hr/>
+
+<table cellpadding="4" cellspacing="1" border="0">
+<% form_for :boletob, @boletob, :url => { :action => 'pagar_boleto', :id => @boleto.id }  do |f| %>
+
+
+<tr>
+    <td>status:</td>
+    <td>
+  <%=
+    @codigos = Codigo.all( :order => "status", :conditions => "categoria_id = 5" ).map {|u| [u.status, u.id] }
+    f.select(:status_pagamento, @codigos)
+  %>
+</td></tr>
+
+
+<tr>
+    <td>multa:</td>
+    <td>
+  <%= f.text_field(:valor_multa, :value => Biblioteca::arredonda_float(v[:multa],2), :size => '8') %>
+</td></tr>
+
+<tr>
+    <td>juros:</td>
+    <td>
+  <%= f.text_field :valor_juros, :value => Biblioteca::arredonda_float(v[:juros],2), :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>desconto:</td>
+    <td>
+  <%= f.text_field :valor_desconto, :value => '0', :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>tarifa do banco:</td>
+    <td>
+  <%= f.text_field :valor_tarifa, :value => '0', :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>valor pago:</td>
+    <td>
+  <%= f.text_field :valor_pago, :value => Biblioteca::arredonda_float(v[:valor_mora],2), :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>data de pagamento:</td>
+    <td>
+  <%= f.date_select(:data_pagamento, :order => [:day, :month, :year], :default => data_default) %>
+</td></tr>
+
+<tr>
+    <td>Comentários:</td>
+    <td>
+  <%= f.text_area(:comentarios, :cols => '50', :rows => '5') %>
+</td></tr>
+<table/>
+
+<p>
+<%= f.submit "Registrar" %>
+</p>
+
+<% end %>
+
+
+<hr/>

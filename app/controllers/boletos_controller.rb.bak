@@ -1,0 +1,154 @@
+# coding: utf-8
+
+class BoletosController < ApplicationController
+
+
+  def new
+    @boleto = Boleto.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @boleto }
+    end
+  end
+
+
+
+  def pagamento
+    @boleto = Boleto.find(params[:id])
+  end
+
+  
+
+
+  def pagar_boleto
+    @boleto = Boleto.find(params[:id])
+    dados = params[:boletob]
+    @dados = dados
+
+    status_boleto = dados["status_pagamento"]
+    status_pagamento = dados["status_pagamento"]
+    valor_multa = dados["valor_multa"]
+    valor_juros = dados["valor_juros"]
+    valor_desconto = dados["valor_desconto"]
+    valor_tarif_banco = dados["valor_tarifa"]
+    valor_pago = dados["valor_pago"]
+    dia = dados["data_pagamento(3i)"]
+    mes = dados["data_pagamento(2i)"]
+    ano = dados["data_pagamento(1i)"]
+    data_pagamento = Time.local(ano.to_i, mes.to_i, dia.to_i)
+    comentarios = dados["comentarios"]
+
+    @boleto.efetua_pagamento \
+      status_boleto, \
+      status_pagamento, \
+      valor_multa, \
+      valor_juros, \
+      valor_desconto, \
+      valor_tarif_banco, \
+      valor_pago, \
+      data_pagamento, \
+      comentarios
+    
+    redirect_to(:controller => 'promissorias', :action => 'show', :id => @boleto.promissoria.id)
+  end
+
+
+  def gera_mes
+    @year = params[:year]
+    @month = params[:month]
+
+    ##
+    ## Antigo
+    @dados = Promissoria.new.gera_boletos_mesb @year, @month
+
+    ##
+    ## Novo
+    #@dados = Promissoria.new.gera_boletos_mes_new @year, @month
+
+
+
+    dt = Time::local(@year, @month, 1).next_month.to_s(:db)
+    sql = <<SQL_TYPE
+SELECT
+c.status, c2.status as 'tipo parcela', a.nome as area, l.numero as lote, p.num as parcela, p.num_total, p.data_vencimento
+FROM promissorias p
+join vendas v
+on v.id = p.venda_id
+join lotes l
+on l.id = v.lote_id
+join areas a
+on a.id = l.area_id
+join codigos c
+on p.cod_status = c.id
+join codigos c2
+on p.cod_tipo_parcela = c2.id
+WHERE p.id NOT in (select p.id from promissorias p JOIN boletos b ON b.promissoria_id = p.id where p.data_vencimento < '2011-08-01')
+AND p.data_vencimento < '#{dt}'
+AND p.cod_status not in (17,20,42)    -- (Desviado pelo corretor, contador nao informa pg, dispensado pela HF)
+and a.id not in (4, 9) 									-- Casas, Sítio cotia
+order by p.data_vencimento desc
+SQL_TYPE
+
+    @confere = Promissoria.find_by_sql(sql)
+
+  end
+
+
+
+  def choice
+    @lote = Lote.find(params[:lote])
+    @venda = @lote.get_venda
+    @promissoria = Promissoria.find(params[:promissoria])
+  end
+
+  ## 46 - Normal sem juros
+  ## 47 - Atrasado - boleto especial
+  ## 48 - Normal com juros
+  ## 49 - Antigo
+
+
+
+
+  def new_sem_juros
+    promissoria = Promissoria.find(params[:id])
+    dados = params[:boleto]
+
+    dia = dados["data_vencimento(3i)"]
+    mes = dados["data_vencimento(2i)"]
+    ano = dados["data_vencimento(1i)"]
+    data_vencimento = Time.local(ano.to_i, mes.to_i, dia.to_i)
+    dia = dados["data_base(3i)"]
+    mes = dados["data_base(2i)"]
+    ano = dados["data_base(1i)"]
+    data_base = Time.local(ano.to_i, mes.to_i, dia.to_i)
+
+    #flag_especial = dados["especial"]
+    #tipo_boleto = flag_especial.to_i == 1 ? 47 : 48
+    tipo_boleto = 46 # Normal
+    @s = promissoria.gera_boletob(tipo_boleto, data_vencimento, data_base)
+  end
+
+
+
+  def new_com_juros
+    promissoria = Promissoria.find(params[:id])
+    dados = params[:boleto]
+
+    dia = dados["data_vencimento(3i)"]
+    mes = dados["data_vencimento(2i)"]
+    ano = dados["data_vencimento(1i)"]
+    data_vencimento = Time.local(ano.to_i, mes.to_i, dia.to_i)
+    dia = dados["data_base(3i)"]
+    mes = dados["data_base(2i)"]
+    ano = dados["data_base(1i)"]
+    data_base = Time.local(ano.to_i, mes.to_i, dia.to_i)
+
+    flag_especial = dados["especial"]
+
+    tipo_boleto = flag_especial.to_i == 1 ? 47 : 48
+    @s = promissoria.gera_boletob(tipo_boleto, data_vencimento, data_base)
+  end
+
+
+end

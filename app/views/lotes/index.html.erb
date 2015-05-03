@@ -1,0 +1,34 @@
+<h2>Lotes</h2>
+<p> <%= link_to 'Retornar', :controller => "home" %> </p>
+
+<table cellpadding="3" cellspacing="1" border="1">
+  <tr>
+    <th>Lote</th>
+    <th>Status</th>
+    <th>Comprador</th>
+  </tr>
+
+  <% for lote in @lotes %>
+    <tr>
+      <td align="left"><%= link_to lote.to_label, lote %></td>
+
+    <%
+      status = Codigo::get_status(lote.cod_status_access)
+      comprador = lote.get_nome_comprador
+    %>
+
+      <td align="left"><%=h status %></td>
+      <td align="left"><%=h comprador %></td>
+
+    </tr>
+  <% end %>
+</table>
+
+<br />
+
+
+<%= link_to 'Novo lote', new_lote_path %>
+
+
+
+

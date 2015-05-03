@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  status: 1
+  valor_titulo: 9.99
+  valor_multa: 9.99
+  valor_juros: 9.99
+  valor_desconto: 9.99
+  valor_tarif_banco: 9.99
+  valor_pago: 9.99
+  data_pagamento: 2010-11-29
+  data_processamento: 2010-11-29
+  comentarios: MyText
+  boleto: 
+
+two:
+  status: 1
+  valor_titulo: 9.99
+  valor_multa: 9.99
+  valor_juros: 9.99
+  valor_desconto: 9.99
+  valor_tarif_banco: 9.99
+  valor_pago: 9.99
+  data_pagamento: 2010-11-29
+  data_processamento: 2010-11-29
+  comentarios: MyText
+  boleto: 

@@ -1,0 +1,44 @@
+<h1>Novo grupo de promissórias</h1>
+
+
+<% form_for :grupo_promissorias, @grupo_promissorias, :url => { :action => 'novo_grupo_promissorias', :id => @venda }  do |f| %>
+
+  <p>Tipo da promissória:
+    <%=
+    @cods_tipo_promissoria = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 4" ).map {|u| [u.status, u.id] }
+    f.select(:cod_tipo_promissoria, @cods_tipo_promissoria)
+  %>
+  </p>
+
+
+  <p>Valor nominal das promissórias:
+    <%= f.text_field :valor, :size => 7, :value => 100 %>
+  </p>
+
+  <p>Data inicial:
+    <%= f.date_select(:data_inicial, :order => [:day, :month, :year]) %>
+  </p>
+
+  <p>Período (meses) entre promissórias:
+    <%= f.text_field :periodo, :size => 2, :value => 1 %>
+  </p>
+
+  <p>Intervalo de
+    <%= f.text_field :inicio_intervalo, :size => 2 %>
+    até
+    <%= f.text_field :fim_intervalo, :size => 2 %>
+    com o total de
+    <%= f.text_field :total_intervalo, :size => 2 %>
+  </p>
+
+  <p>
+    <%=  f.check_box(:corrigida, :checked => true ) %>
+    Parcela(s) corrigida(s) pela poupança.
+  </p>
+
+  <p>
+    <%= f.submit "Cadastrar" %>
+  </p>
+
+
+<% end %>

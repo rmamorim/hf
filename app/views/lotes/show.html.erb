@@ -1,0 +1,224 @@
+<h1><%=h format("Lote %s", @lote.to_label) %></h1>
+<%= link_to('Retornar', :controller => "lotes", :action => "index", :area_id => @lote.area.id) %>
+<hr/>
+
+
+<%
+if @lote.get_venda.nil? then
+  vendido = false
+else
+  vendido = true
+end
+
+
+  agora = Time.now.to_date
+  venda = @lote.get_venda
+
+%>
+
+
+<table cellpadding="0" cellspacing="0" border="1" class="ricardo">
+
+  <tr>
+    <td><b>Lote</b></td>
+    <td><%=h @lote.area.nome + "-" + @lote.numero.to_s + @lote.subdivisao.to_s %></td>
+  </tr>
+
+  <tr>
+    <td><b>Status</b></td>
+    <td><%=h Codigo::get_status(@lote.cod_status_access) %></td>
+  </tr>
+
+  <tr>
+    <td><b>Superficie</b></td>
+    <td><%=h @lote.superficie %></td>
+  </tr>
+
+  <tr>
+    <td><b>Inscrição PMG</b></td>
+    <td><%=h @lote.inscricao_pmg %></td>
+  </tr>
+
+
+  <% if vendido then %>
+    <tr>
+      <td><b>Comprador</b></td>
+      <td><%=h @lote.get_nome_comprador %></td>
+    </tr>
+
+    <tr>
+      <td><b>Data do contrato</b></td>
+      <td> <%=h Biblioteca::format_data(@lote.get_venda.get_data_venda) %></td>
+    </tr>
+
+    <tr>
+      <td><b>Valor total</b></td>
+      <td><%=h Biblioteca::format_currency @lote.valor_total %></td>
+    </tr>
+
+    <tr>
+      <td><b>Entrada</b></td>
+      <td> <%=h Biblioteca.format_entrada @lote.qtd_p_entrada, @lote.valor_p_entrada %> </td>
+    </tr>
+
+    <tr>
+      <td><b>Parcelas</b></td>
+      <td><%=h @lote.get_venda.get_num_parcelas %></td>
+    </tr>
+  <% end %>
+
+
+  <tr>
+    <td><b>Comentários</b></td>
+    <td><%=h @lote.comentario %></td>
+  </tr>
+
+  <tr>
+    <td align="right" id="teste"><%=
+      link_to("Vendas",
+        :controller => "lotes",
+        :action => "vendas",
+        :id => @lote.id
+      )
+    %></td>
+    <td><%=h @lote.vendas.size %></td>
+  </tr>
+
+
+  <tr>
+    <td align="right"><%=
+      link_to("Notas",
+        :controller => "lotes",
+        :action => "notas",
+        :id => @lote.id
+      )
+    %></td>
+    <td><%=h @lote.notas.size %></td>
+  </tr>
+
+
+  <tr>
+    <td align="right"><%=
+      link_to("Extrato",
+        :controller => "lotes",
+        :action => "extrato",
+        :id => @lote.id
+      )
+    %></td>
+    <td><% %></td>
+  </tr>
+
+
+</table>
+
+<hr/>
+
+<%
+if true or (vendido and venda.promissorias.size != 0 and venda.promissorias[0].boletos.size == 0) then
+  #if venda.promissorias[0].boletos.size == 0 then
+
+%>
+<div>
+<%=
+          link_to('Imprime jogo inicial',
+            :controller => "lotes",
+            :action => "imprime_jogo_inicial",
+            :id => @lote.id
+          )
+        %>
+</div>
+<hr/>
+<%
+end
+%>
+
+<div>
+<%=
+          link_to('Imprime boletos de parcelas atrasadas.',
+            :controller => "lotes",
+            :action => "imprime_parcelas_atrasadas",
+            :id => @lote.id
+          )
+        %>
+</div>
+
+
+<br/>
+
+<%#*Tabela com relação de Promissórias%>
+
+<table cellpadding="2" cellspacing="1" border="1">
+    <tr>
+    <th>Parcela</th>
+    <th>vencimento</th>
+    <th>Valor</th>
+    <th>Status</th>
+    <th>Atraso</th>
+    <th>pagamento</th>
+
+    <th>Valor vencimento</th>
+    <th>Valor atual</th>
+    <th>Valor pago</th>
+
+  </tr>
+
+
+
+
+
+  <%
+
+  if !venda.nil?
+    flag_jogo_inicial = false
+    venda.promissorias.sort{|a,b| a.data_vencimento <=> b.data_vencimento}.each do |p|
+
+      puts "Promissoria"
+      puts p.num
+      puts
+
+      v = p.get_valores agora
+      if p.cod_tipo_parcela == 29 and p.num == 1 then
+        flag_jogo_inicial = true if p.boletos.size == 0
+      end
+      flag_pago = v[:dias_atraso] == 0 ? false : true
+    %>
+
+
+<tr>
+        <td align="center">
+        <%=
+          link_to(format('%s/%s', p.num, p.num_total),
+            :controller => "promissorias",
+            :action => "show",
+            :id => p.id
+          )
+        %>
+        </td>
+
+        <td align="center"><%=h Biblioteca::format_data p.data_vencimento %></td>
+        <td align="right"><%=h Biblioteca::format_currency(v[:valor_original]) %>  </td>
+        <td align="center"><%=h Codigo::get_status(p.cod_status) %></td>
+        <td align="right"><%=h flag_pago ? v[:dias_atraso] : ''  %></td>
+        <td align="center"><%=h flag_pago ? Biblioteca::format_data(v[:data_pagamento]) : '' %></td>
+        <td align="right"><%=h Biblioteca::format_currency v[:valor_vencimento] %></td>
+        <td align="right"><%=h !v[:valor_pago].nil? ? '' : Biblioteca::format_currency(v[:valor_mora]) %></td>
+        <td align="right"><%=h v[:valor_pago].nil? ? '' : Biblioteca::format_currency(v[:valor_pago])  %></td>
+
+</tr>
+    <%
+    end
+  end
+%>
+</table>
+
+<%
+if flag_jogo_inicial then
+%>
+<hr/>
+<div> Imprime Jogo Inicial! </div>
+<hr/>
+<%
+end
+%>
+
+

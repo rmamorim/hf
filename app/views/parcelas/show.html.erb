@@ -1,0 +1,97 @@
+
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+
+<tr> 
+  <td><b>Id</b></td>
+  <td><%=h @parcela.id %></td>
+</tr>
+
+<tr> 
+  <td><b>Parcela número</b></td>
+  <td><%=h @parcela.numero %></td>
+</tr>
+
+<tr> 
+  <td><b>Status</b></td>
+  <td><%=h Biblioteca::status_parcela @parcela.cod_status %></td>
+</tr>
+
+
+<tr> 
+  <td><b>Valor original</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.valor_original %></td>
+</tr>
+
+<tr> 
+  <td><b>Juros</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.juros %></td>
+</tr>
+
+<tr> 
+  <td><b>Taxas</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.taxas %></td>
+</tr>
+
+<tr> 
+  <td><b>Desconto</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.desconto %></td>
+</tr>
+
+<tr> 
+  <td><b>Atualização</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.atualizacao %></td>
+</tr>
+
+<tr> 
+  <td><b>Variação da poupança</b></td>
+  <td align="right"><%=h @parcela.var_poupanca %></td>
+</tr>
+
+
+<tr> 
+  <td><b>Valor total</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.valor_total %></td>
+</tr>
+
+
+<tr> 
+  <td><b>Valor pago</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.valor_pago %></td>
+</tr>
+
+<tr> 
+  <td><b>Tarifa bancária</b></td>
+  <td align="right"><%=h Biblioteca::format_currency @parcela.tarifa_bancaria %></td>
+</tr>
+
+
+<tr> 
+  <td><b>Data do vencimento</b></td>
+  <td><%=h @parcela.data_vencimento.strftime("%d/%m/%Y") %></td>
+</tr>
+
+<tr> 
+  <td><b>Data do pagamento</b></td>
+  <td><%=h Biblioteca::format_data @parcela.data_pagamento %></td>
+</tr>
+
+</table>
+
+
+<p> </p>
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tr><td><b>Comentários</b></td></tr>
+<tr><td><%=h @parcela.comentarios %></td></tr>
+</table>
+
+
+
+<p></p>
+  
+
+
+<%= link_to 'Edit', edit_parcela_path(@parcela) %> |
+<%= link_to 'Back', lotes_path %>

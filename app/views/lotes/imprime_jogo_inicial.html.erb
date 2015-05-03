@@ -1,0 +1,29 @@
+<%
+
+venda = @lote.get_venda
+if !venda.nil?
+  dados = venda.get_extrato
+end
+
+%>
+
+<h3> <%= "Lote #{@lote.to_label}"  %>   </h3>
+
+<p>
+  <%= link_to('Retornar', :controller => "lotes", :action => "index", :area_id => @lote.area.id) %>
+</p>
+<br/>
+<hr/>
+
+<div>
+<%
+  @s.each do |linha| 
+    %> <%= linha %> <br/> <%
+  end
+%>
+</div>
+
+
+
+
+

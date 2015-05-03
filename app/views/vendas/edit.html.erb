@@ -1,0 +1,78 @@
+<h1><%=h format("Editando Venda: Lote %s", @venda.lote.to_label) %></h1>
+
+<%= error_messages_for :venda %>
+
+
+
+<% form_for(@venda) do |f| %>
+
+<table>
+
+  <tr>
+    <td><b>Status</b></td>
+    <td>  <%=
+    @cods_status = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 8" ).map {|u| [u.status, u.id] }
+    f.select(:cod_status, @cods_status)
+  %></td>
+  </tr>
+
+  <tr>
+    <td><b>Corretor</b</td>
+    <td>  <%=
+    @cods_corretor = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 2" ).map {|u| [u.status, u.id] }
+    f.select(:cod_corretor, @cods_corretor)
+  %></td>
+  </tr>
+
+  <tr>
+    <td><b>Valor</b></td>
+    <td><%= f.text_field :valor, :size => 6 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Correção poupança?</b></td>
+    <td><%= f.check_box :correc_poup, :size => 6 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Data do contrato</b></td>
+    <td><%= f.date_select(:data_contrato, :order => [:day, :month, :year], :include_blank => true) %></td>
+  </tr>
+
+  <tr>
+    <td><b>Data da escritura</b></td>
+    <td><%= f.date_select(:data_escritura, :order => [:day, :month, :year], :include_blank => true ) %></td>
+  </tr>
+
+  <tr>
+    <td><b>Dias de carência (multa/juros) </b></td>
+    <td><%= f.text_field :dias_carencia, :size => 6 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Multa (%)</b></td>
+    <td><%= f.text_field :multa, :size => 6 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Juros (%)</b></td>
+    <td><%= f.text_field :juros, :size => 6 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Tipo de correção </b></td>
+    <td>  <%=
+    @cods_tipo_correcao = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 6" ).map {|u| [u.status, u.id] }
+    f.select(:tipo_correcao, @cods_tipo_correcao)
+  %></td>
+  </tr>
+
+
+
+</table>
+
+<%= f.submit "Gravar" %>
+<% end %>
+
+
+

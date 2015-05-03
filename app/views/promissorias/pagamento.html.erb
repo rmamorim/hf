@@ -1,0 +1,74 @@
+<h2>Registra pagamento de promissória sem boleto</h2>
+
+
+
+<%= error_messages_for :promissoria %>
+
+<%=h @promissoria.id %> <hr/>
+
+
+<%
+  data_default = Time.now
+%>
+
+<br>
+<hr/>
+
+<table cellpadding="4" cellspacing="1" border="0">
+<% form_for :promissoriab, @promissoriab, :url => { :action => 'pagar_promissoria', :id => @promissoria.id }  do |f| %>
+
+
+<tr>
+    <td>status do pagamento:</td>
+    <td>
+  <%=
+    @codigos = Codigo.where("categoria_id = 5").order("status").map {|u| [u.status, u.id] }
+    f.select(:status_pagamento, @codigos)
+  %>
+</td></tr>
+
+<tr>
+    <td>multa:</td>
+    <td>
+  <%= f.text_field(:valor_multa, :value => '0', :size => '8') %>
+</td></tr>
+
+<tr>
+    <td>juros:</td>
+    <td>
+  <%= f.text_field :valor_juros, :value => '0', :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>desconto:</td>
+    <td>
+  <%= f.text_field :valor_desconto, :value => '0', :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>valor pago:</td>
+    <td>
+  <%= f.text_field :valor_pago, :value => @promissoria.get_valor_data_vencimento_original, :size => '8' %>
+</td></tr>
+
+<tr>
+    <td>data de pagamento:</td>
+    <td>
+  <%= f.date_select(:data_pagamento, :order => [:day, :month, :year], :default => data_default) %>
+</td></tr>
+
+<tr>
+    <td>Comentários:</td>
+    <td>
+  <%= f.text_area(:comentarios, :cols => '50', :rows => '5') %>
+</td></tr>
+<table/>
+
+<p>
+<%= f.submit "Registrar" %>
+</p>
+
+<% end %>
+
+
+<hr/>

@@ -1,0 +1,103 @@
+<h1><%=h format("Lote %s - Vendas", @lote.to_label) %></h1>
+<%= link_to 'Retornar', @lote %>
+<br/>
+
+<%= error_messages_for :lote %>
+
+
+<br/>
+<%=
+if !@lote.vendido? then
+  link_to("Nova venda",
+    :controller => "vendas",
+    :action => "new",
+    :lote => @lote.id
+  )
+end
+%>
+<br/>
+<br/>
+<hr/>
+
+
+<% for venda in @vendas %>
+
+
+  <table cellpadding="2" cellspacing="2" border="0">
+
+    <tr>
+      <td style="font-family:Comic Sans MS; font-size:small; font-weight:bold; color:blue; background-color:yellow"><%=
+        link_to("Venda",
+          :controller => "vendas",
+          :action => "show",
+          :id => venda.id
+        )
+      %></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td>  <%= link_to("Comprador",
+          :controller => "compradores",
+          :action => "index",
+          :venda => venda.id
+        ) %></td>
+      <td>
+        <% for comprador in venda.compradors %>
+          <%=h comprador.pessoa.nome %> <br/>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
+      <td>Data do contrato:</td>
+      <td> <%=h Biblioteca::format_data(venda.data_contrato) %> </td>
+    </tr>
+    <tr>
+      <td>Data da escritura:</td>
+      <td> <%=h venda.data_escritura %> </td>
+    </tr>
+
+    <tr>
+      <td>Status:</td>
+      <td> <%=h Codigo::get_status(venda.cod_status) %> </td>
+    </tr>
+    <tr>
+      <td>Corretor:</td>
+      <td> <%=h Codigo::get_status(venda.cod_corretor) %> </td>
+    </tr>
+
+    <tr>
+      <td>Valor de venda:</td>
+      <td> <%=h Biblioteca::format_currency venda.valor %> </td>
+    </tr>
+
+    <tr>
+      <td>Correção monetária:</td>
+      <td> <%=h Codigo::get_status(venda.tipo_correcao) %> </td>
+    </tr>
+
+    <tr>
+      <td>Dias de carência:</td>
+      <td> <%=h venda.dias_carencia %> </td>
+    </tr>
+
+    <tr>
+      <td>Multa (% ao mês):</td>
+      <td> <%=h venda.multa %> </td>
+    </tr>
+
+    <tr>
+      <td>Juros (% ao mês):</td>
+      <td> <%=h venda.juros %> </td>
+    </tr>
+
+  </table>
+
+  <br/>
+<% end %>
+  <hr/>
+
+
+
+

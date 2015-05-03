@@ -1,0 +1,141 @@
+  (type.ps) runlibfile
+  (unit.ps) runlibfile
+  (IsoLatin.enc) runlibfile
+  /default_encoding IsoLatin def  
+<< /Duplex false /Tumble false >> setpagedevice
+/pagesize [595 842]  def
+/margin 3 dict def margin begin /top 1 cm  def /right 1 cm  def /bottom 2.3 cm  def /left	2.3 cm  def end
+(paper.ps) runlibfile
+   [ /Producer (Ruby Ghostscript - RGhost v0.8.7)  /DOCINFO pdfmark   /rows_per_page 80 def  /count_pages 10 def  /row_height 0.4 cm  def  /row_padding 0.1 cm  def    (basic.ps) runlibfile
+  (cursor.ps) runlibfile
+  (rectangle.ps) runlibfile
+  (font.ps) runlibfile
+  (textarea.ps) runlibfile
+  (horizontal_line.ps) runlibfile
+  (vertical_line.ps) runlibfile
+  (callbacks.ps) runlibfile
+  (show.ps) runlibfile
+  (eps.ps) runlibfile
+  (jpeg.ps) runlibfile
+  (gif.ps) runlibfile
+  (begin_document.ps) runlibfile
+  (datagrid.ps) runlibfile
+  (text.ps) runlibfile
+  (frame.ps) runlibfile
+  (link.ps) runlibfile
+  (rect_link.ps) runlibfile
+    limit_left  current_row  moveto  
+/_bi{
+ /Helvetica-BoldOblique encoding_font
+/Helvetica-BoldOblique-encoding exch definefont pop
+/Helvetica-BoldOblique-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h4{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 11 scalefont setfont  0 setgray 
+} bind def 
+
+/_big{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 10 scalefont setfont  0 setgray 
+} bind def 
+
+/_h5{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 10 scalefont setfont  0 setgray 
+} bind def 
+
+/_small{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 7 scalefont setfont  0 setgray 
+} bind def 
+
+/_title{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 20 scalefont setfont  0 setgray 
+} bind def 
+
+/_i{
+ /Helvetica-Oblique encoding_font
+/Helvetica-Oblique-encoding exch definefont pop
+/Helvetica-Oblique-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_span{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h1{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 14 scalefont setfont  0 setgray 
+} bind def 
+
+/_bold{
+ /Helvetica-Bold encoding_font
+/Helvetica-Bold-encoding exch definefont pop
+/Helvetica-Bold-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_b{
+ /Helvetica-Bold encoding_font
+/Helvetica-Bold-encoding exch definefont pop
+/Helvetica-Bold-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h2{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 13 scalefont setfont  0 setgray 
+} bind def 
+
+/_bigger{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 150 scalefont setfont  0.666666666666667 1.0 0.2 setrgbcolor 
+} bind def 
+
+/_normal{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_pre{
+ /Courier encoding_font
+/Courier-encoding exch definefont pop
+/Courier-encoding findfont 8 scalefont setfont  0 setgray 
+} bind def 
+
+/_h3{
+ /Helvetica encoding_font
+/Helvetica-encoding exch definefont pop
+/Helvetica-encoding findfont 12 scalefont setfont  0 setgray 
+} bind def 
+  
+/before_page_create 3 dict def before_page_create begin 
+/proc {   BeginEPSF 
+ 0 cm  0 cm  translate  
+	(C:/Ruby187/lib/ruby/gems/1.8/gems/rghost-0.8.7.6/lib/rghost/ps/rghost_default_template.eps) run 
+EndEPSF
+    } bind def 
+/except []  def 
+/only []  def 
+end   (begin_document.ps) runlibfile
+  limit_left  current_row  moveto   /benchmark realtime def  beging  6 cm  15 cm  moveto  _bigger (Yes!) show   endg  beging  10 cm  14 cm  moveto  _default_font (Your environment is ready!) show   endg  beging  10 cm  13 cm  moveto  _default_font (RGhost Version 0.8.7) show   endg  beging  10 cm  12 cm  moveto  _default_font (Created at Sat Jun 06 08:06:54 -0300 2009) show   endg  beging  10 cm  11 cm  moveto  _default_font (Now Mon Feb 20 10:26:15 -0200 2012) show   endg  20  20  moveto  
+      default_font (RGhost::Ghostscript benchmark: ) show
+      realtime benchmark sub 1000 div 20 string cvs show ( seconds ) show
+       
+
+ after_page_create  callback  after_document_create  showpage  
+%%EOF  
+
+  

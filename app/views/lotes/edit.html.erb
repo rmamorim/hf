@@ -1,0 +1,35 @@
+<h1>Editando Lote</h1>
+
+<%= error_messages_for :lote %>
+
+<% form_for(@lote) do |f| %>
+
+  <!--  
+  <p>    <b>Número</b><br />    
+  <%= f.text_field :numero %>  
+  </p> 
+  !-->
+
+
+  <p>
+  <b>Status</b><br />
+  <%=
+    @cods_status = Codigo.find(:all, :order => "status", :conditions => "categoria_id = 1" ).map {|u| [u.status, u.id] }
+    f.select(:cod_status_access, @cods_status)
+  %>
+</p>
+
+
+
+  <p>
+    <b>Superficie</b><br />
+    <%= f.text_field :superficie %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @lote %> |
+<%= link_to 'Back', lotes_path %>

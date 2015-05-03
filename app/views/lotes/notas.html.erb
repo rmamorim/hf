@@ -1,0 +1,27 @@
+<h1><%=h format("Notas do %s", @lote.to_label) %></h1>
+
+<%= error_messages_for :lote %>
+
+<%= link_to 'Nova Nota', new_nota_path + "/" + @lote.id.to_s %>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+
+  <% for nota in @notas %>
+    <tr>
+      <td>
+        <font size="1" color="#881236"><strong><%=h nota.created_at.strftime("%d/%m/%Y") %> </strong></font><br>
+      </td>
+      </tr>
+      <tr>
+      <td>
+        <%= nota.mensagem %> <br>
+      </td>
+    </tr>
+
+  <% end %>
+
+</table>
+
+
+<%= link_to 'Retornar', @lote %>
