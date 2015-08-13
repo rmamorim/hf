@@ -11,7 +11,7 @@ class FaturamentoController < ApplicationController
     sql = <<sqltype
  select po.*
  from promissorias po
- left join boletos b 
+ left join boletos b
  on po.id = b.promissoria_id
  join pagamentos p
  on p.boleto_id = b.id
@@ -34,7 +34,7 @@ class FaturamentoController < ApplicationController
  order by
  a.nome, l.numero, po.num
 sqltype
-    
+
 
     @valor = sql
     @lista = []
@@ -44,6 +44,7 @@ sqltype
 
       area = p.venda.lote.area.nome
       lote = p.venda.lote.numero
+      quadra = p.venda.lote.quadra
       parcela = p.num
       num_total = p.num_total
       tipo_promissoria = Codigo::get_status(p.cod_tipo_parcela)
@@ -57,7 +58,8 @@ sqltype
 
       a = []
       a.push(area)
-      a.push(lote)
+      a.push(quadra)
+      a.push(lote)      
       a.push(parcela)
       a.push(num_total)
       a.push(tipo_promissoria)

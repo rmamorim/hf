@@ -354,7 +354,8 @@ sql_type
 
   def gnucash2
 
-    arq_db = "C:\\Dropbox\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
+    #arq_db = "C:\\Dropbox\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
+    arq_db = "C:\\Onedrive\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
     db = SQLite3::Database.new(arq_db)
 
     sql = <<sql_type
@@ -426,6 +427,113 @@ sql_type
 
 
 
+
+  def pagamentos_por_area
+
+    area = 30
+
+    @dados = {}
+    lotes = {}
+    titulos = []
+    linhas = []
+    titulos << 'Lote'
+    titulos << 'Superfície'
+    titulos << 'Valor pago'
+    titulos << 'Saldo devedor'
+
+
+    sql = <<sql_type
+    SELECT
+    numero,
+    superficie
+    FROM lotes l
+    WHERE l.area_id = #{area}
+    ORDER BY numero
+sql_type
+
+
+    rs = Lote.find_by_sql sql
+    rs.each do |l|
+      lote = {}
+      lote[:superficie] = l.superficie.to_i
+      lotes[l.numero.to_i] = lote
+    end
+
+
+    sql = <<sql_type
+    SELECT
+    l.numero as lote,
+    SUM(p.valor_pago) as valor_pago
+    FROM pagamentos p
+    JOIN boletos b ON b.id = p.boleto_id
+    JOIN promissorias pm ON pm.id = b.promissoria_id
+    JOIN vendas v ON v.id = pm.venda_id
+    JOIN lotes l ON l.id = v.lote_id
+    JOIN areas a ON a.id = l.area_id and a.id = #{area}
+    GROUP BY
+    l.numero
+    ORDER BY 1
+sql_type
+
+    sum_valor_pago = 0
+    rs = Pagamento.find_by_sql sql
+    rs.each do |l|
+      lote = lotes[l.lote.to_i]
+      lote[:valor_pago] = l.valor_pago.to_f
+      sum_valor_pago += l.valor_pago.to_f
+    end
+
+
+
+    sql = <<sql_type
+    SELECT
+    p.id,
+    l.numero as lote,
+    p.valor_original as valor_parcela
+    FROM promissorias p
+    JOIN vendas v ON v.id = p.venda_id
+    JOIN lotes l ON l.id = v.lote_id
+    JOIN areas a ON a.id = l.area_id and a.id = #{area}
+		WHERE p.cod_status IN (1,20,26)
+    ORDER BY lote
+sql_type
+
+    sum_saldo_devedor = 0
+    rs = Promissoria.find_by_sql sql
+    rs.each do |p|
+      pm = Promissoria.find(p.id)
+      dados = pm.get_valores (Time.now)
+
+      lote = lotes[p.lote]
+
+      valor_parcela = (dados[:valor_mora]).to_f
+      lote[:saldo_devedor] = lote.include?(:saldo_devedor) ? lote[:saldo_devedor] + valor_parcela : valor_parcela
+      sum_saldo_devedor += valor_parcela
+    end
+
+
+    colunas = []
+    colunas << ''
+    colunas << ''
+    colunas << sum_valor_pago.to_currency(Currency::BRL)
+    colunas << sum_saldo_devedor.to_currency(Currency::BRL)
+    linhas << colunas
+
+
+    lotes.sort_by { |key, value| key.to_i }.each { |key, value|
+      colunas = []
+      colunas << key
+      colunas << value[:superficie]
+      colunas << ((value.include?(:valor_pago)) ? (value[:valor_pago]).to_currency(Currency::BRL) : "")
+      colunas << ((value.include?(:saldo_devedor)) ? (value[:saldo_devedor]).to_currency(Currency::BRL) : "")
+      linhas << colunas
+    }
+
+
+    @dados[:titulos] = titulos
+    @dados[:linhas] = linhas
+
+  end
 
 
 end

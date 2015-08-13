@@ -26,7 +26,7 @@ end
       <td><%= boleto.nosso_numero %> </td>
       <td><%= boleto.data_vencimento.to_date %> </td>
       <td><%= boleto.promissoria.data_vencimento %> </td>
-      <td><%= boleto.valor_titulo.to_currency (:locale => :en) %> </td>
+      <td><%= boleto.valor_titulo.to_currency(:locale => :en) %> </td>
     </tr>
   <%  end %>
 </table>

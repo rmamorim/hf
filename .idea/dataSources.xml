@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1740427802">
+  <component name="DataSourceManagerImpl" format="xml" hash="2496960612">
     <data-source source="LOCAL" name="Rails hf: development" uuid="7d0e456e-9ee6-4569-8fa8-e3a7764ea187">
       <driver-ref>sqlite.xerial</driver-ref>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\Users\Ricardo\Dropbox\hf\db\development.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\hf\db\development.sqlite3</jdbc-url>
       <libraries>
         <library>
           <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/xerial-sqlite-license.txt</url>
         </library>
         <library>
           <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/sqlite-jdbc-3.7.6.3-20110609.081603-3.jar</url>
-        </library>
-      </libraries>
-    </data-source>
-    <data-source source="LOCAL" name="SHF" uuid="1a31e64b-8556-4c10-822f-c24a63b6022f">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\Users\Ricardo\Dropbox\hf\db\development.sqlite3</jdbc-url>
-      <libraries>
-        <library>
-          <url>jar://$PROJECT_DIR$/db/sqlite-jdbc-3.7.6.3-20110609.081603-3.jar!/</url>
-        </library>
-        <library>
-          <url>file://$PROJECT_DIR$/db/xerial-sqlite-license.txt</url>
         </library>
       </libraries>
     </data-source>

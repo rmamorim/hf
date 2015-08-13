@@ -57,6 +57,7 @@ Hf::Application.routes.draw do
   match 'reports/espelho'  => 'reports#espelho'
   match 'reports/espelho2'  => 'reports#espelho2'
   match 'reports/etiquetas_iptu'  => 'reports#etiquetas_iptu'
+  match 'reports/pagamentos_por_area'  => 'reports#pagamentos_por_area'
 
   match 'home/backup'  => 'home#backup'
   match 'home/restore'  => 'home#restore'

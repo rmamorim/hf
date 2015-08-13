@@ -258,7 +258,4 @@
       <primary-key columns="id"/>
     </table>
   </data-source>
-  <data-source name="SHF" uuid="1a31e64b-8556-4c10-822f-c24a63b6022f">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
 </component>

@@ -7,6 +7,39 @@ class Promissoria < ActiveRecord::Base
 
 
 
+
+  def faz_pagamento_entrada_sem_boleto valor_pago
+    data_pagamento = self.venda.get_data_venda
+    valor_tarif_banco = valor_desconto = valor_juros = valor_multa = 0
+    comentarios = 'Entrada paga no ato da escritura.'
+
+    boleto = Boleto.new
+    boleto.status = 40 # Sem Boleto
+    boleto.valor_original = valor_pago
+    boleto.valor_titulo = valor_pago
+    boleto.promissoria_id = self.id
+    boleto.save
+
+    pagamento = Pagamento.new
+    pagamento.boleto = boleto
+    pagamento.status = 63 # Entrada
+    pagamento.valor_titulo = self.valor_original
+    pagamento.valor_multa = valor_multa
+    pagamento.valor_juros = valor_juros
+    pagamento.valor_desconto = valor_desconto
+    pagamento.valor_tarif_banco = valor_tarif_banco
+    pagamento.valor_pago = valor_pago
+    pagamento.data_pagamento = data_pagamento.to_s.strip
+    pagamento.data_processamento = DateTime.now.strftime("%Y-%m-%d").to_s.strip
+    pagamento.comentarios = comentarios
+    pagamento.save
+
+    self.cod_status = 63 # Entrada
+    self.save
+  end
+
+
+
   def to_s
     ## Qual a diferença para to_label ?
 
