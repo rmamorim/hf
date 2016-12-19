@@ -41,7 +41,7 @@ class Idxpoupanca < ActiveRecord::Base
   def Idxpoupanca.get_idx_poupanca_dias dtFinal, dias, tipo
 
     ## Caso de sem correção
-    if tipo == 43 then
+    if (tipo.nil?) or (tipo == 43) then
       return 1
     end
 

@@ -82,6 +82,13 @@
   %></td></tr>
 
   <tr><td><%=
+    link_to("Cotia",
+            :controller => "lotes",
+            :action => "index",
+            :area_id => 33)
+  %></td></tr>
+
+  <tr><td><%=
         link_to("Domus",
                 :controller => "lotes",
                 :action => "index",
@@ -123,11 +130,19 @@
   <tr><td><hr/></td></tr>
 
   <tr><td><%=
-      link_to("Retorno CEF",
+      link_to("Retorno CEF - SICOB",
         :controller => "retorno",
         :action => "index",
         :id => 1)
     %></td></tr>
+
+  <tr><td><%=
+    link_to("Retorno CEF - Cobrança",
+            :controller => "retorno",
+            :action => "cobranca",
+            :id => 1)
+  %></td></tr>
+
 
   <tr>
     <td>

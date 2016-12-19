@@ -10,7 +10,9 @@ class InadimplenciaController < ApplicationController
         "order by area_id, numero")
 
     lista.each do |item|
-      @lista.push(item.get_status_promissorias)
+      a = item.get_status_promissorias
+      a.insert(0, item)
+      @lista.push(a)
     end
 
 

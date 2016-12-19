@@ -22,7 +22,7 @@ class Promissoria < ActiveRecord::Base
 
     pagamento = Pagamento.new
     pagamento.boleto = boleto
-    pagamento.status = 63 # Entrada
+    pagamento.status = 63 # Entrada - Status pagamento
     pagamento.valor_titulo = self.valor_original
     pagamento.valor_multa = valor_multa
     pagamento.valor_juros = valor_juros
@@ -34,7 +34,7 @@ class Promissoria < ActiveRecord::Base
     pagamento.comentarios = comentarios
     pagamento.save
 
-    self.cod_status = 63 # Entrada
+    self.cod_status = 63 # Entrada - Status Promissoria
     self.save
   end
 
@@ -54,16 +54,16 @@ class Promissoria < ActiveRecord::Base
 
   def get_status
     status = :erro
-    if [42].include?(self.cod_status)
+    if self.dispensada?
       status = :liberada
     end
-    if [10, 17, 18, 19].include?(self.cod_status)
+    if self.desviada?
       status = :desviada
     end
-    if [12, 13, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 39, 63].include?(self.cod_status)
+    if self.pago?
       status = :paga
     end
-    if [1, 14, 20, 26, 38].include?(self.cod_status)
+    if self.nao_pago?
       status = :nao_paga
     end
     if status == :erro
@@ -92,7 +92,16 @@ class Promissoria < ActiveRecord::Base
 
 
   def pago?
-    if [12, 13, 15, 16, 17, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 39, 63].include?(self.cod_status) then
+    if [12, 13, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 39, 63].include?(self.cod_status) then
+      return true
+    else
+      return false
+    end
+  end
+
+
+  def nao_pago?
+    if [1, 14, 20, 26, 38].include?(self.cod_status) then
       return true
     else
       return false
@@ -179,12 +188,31 @@ class Promissoria < ActiveRecord::Base
     @valor_data_mora = 0
     @dias_atraso = 0
 
-    def entrada_intermediaria_paga
+
+    def quitacao_paga
+      ###
+      ###
+      ###
+    end
+
+
+    def generica
+      ###
+      ###
+      ###
+    end
+
+
+    def entrada_intermediaria_quitacao_paga
       self.boletos.each do |b|
         if !b.pagamento.nil? then
           @valores[:data_pagamento] = (b.pagamento).data_pagamento
-          @valores[:valor_pago] = (b.pagamento).valor_pago.to_f
-          @dias_atraso = (b.pagamento.data_pagamento - self.data_vencimento).to_i
+          @valores[:valor_pago] = (b.pagamento).valor_pago.to_f + (b.pagamento).valor_tarif_banco.to_f
+          if b.status == 40 then    # Pagamento sem boleto
+            @dias_atraso = 0
+          else
+            @dias_atraso = (b.pagamento.data_pagamento - self.data_vencimento).to_i
+          end
 
           if @dias_atraso > 0 then
             ## Calcula diferença pagamento
@@ -199,21 +227,10 @@ class Promissoria < ActiveRecord::Base
 
 
     def mensal_paga
-
-      puts "#############"
-      puts self
-      puts self.boletos
-      puts "#############"
-
-
-
       (self.boletos).each do |b|
-        puts "#############"
-        puts b
-        puts "#############"
         if !(b.pagamento.nil?) then
           @valores[:data_pagamento] = (b.pagamento).data_pagamento
-          @valores[:valor_pago] = (b.pagamento).valor_pago.to_f
+          @valores[:valor_pago] = (b.pagamento).valor_pago.to_f + (b.pagamento).valor_tarif_banco.to_f
           if b.status == 40 then    # Pagamento sem boleto
             @dias_atraso = 0
           else
@@ -262,7 +279,7 @@ class Promissoria < ActiveRecord::Base
           @valor_data_mora = @valor_vencimento
         end
     else
-        entrada_intermediaria_paga if [27, 28].include?(self.cod_tipo_parcela)
+        entrada_intermediaria_quitacao_paga if [27, 28, 67].include?(self.cod_tipo_parcela)
         mensal_paga if self.cod_tipo_parcela == 29
     end
 
@@ -466,11 +483,85 @@ class Promissoria < ActiveRecord::Base
 
 
   def gera_seu_numero
-    # via = self.get_via
-    # seu_numero = format("%s-%s/%s", self.venda.get_lote_nome, self.num, self.num_total)
-    # seu_numero = (via > 1) ? format("%s.%s", seu_numero, via) : seu_numero
-    msg_via = get_via > 1 ? format(".%i", get_via.to_i) : ""
-    seu_numero = format("%s-%s/%s%s", self.venda.lote.to_label, self.num, self.num_total, msg_via).strip
+    ## via = self.get_via
+    ## seu_numero = format("%s-%s/%s", self.venda.get_lote_nome, self.num, self.num_total)
+    ## seu_numero = (via > 1) ? format("%s.%s", seu_numero, via) : seu_numero
+
+    #msg_via = get_via > 1 ? format(".%i", get_via.to_i) : ""
+    #seu_numero = format("%s-%s/%s%s", self.venda.lote.to_label, self.num, self.num_total, msg_via).strip
+
+    area = self.venda.lote.area.nome.strip
+    case area.strip
+      when 'A'
+        loteamento = '01'
+      when 'B'
+        loteamento = '02'
+      when 'J'
+        loteamento = '03'
+      when 'M'
+        loteamento = '04'
+      when 'C'
+        loteamento = '05'
+      when 'DMJ'
+        loteamento = '06'
+      when 'DUS'
+        loteamento = '07'
+      when 'COT'
+        loteamento = '08'
+      else
+        loteamento = '00'
+    end
+
+    s_quadra = self.venda.lote.quadra.to_s.strip
+    case s_quadra
+      when 'A', 'B1'
+        quadra = '1'
+      when 'B', 'B2'
+        quadra = '2'
+      when 'C', 'B3'
+        quadra = '3'
+      when 'D', 'B4'
+        quadra = '4'
+      when 'E', 'B5'
+        quadra = '5'
+      when 'F', 'B6'
+        quadra = '6'
+      when 'G', 'B7'
+        quadra = '7'
+      when 'H', 'B8'
+        quadra = '8'
+      when 'I', 'B9'
+        quadra = '8'
+
+      else
+        quadra = '0'
+    end
+
+    s_lote = self.venda.lote.numero.to_s.strip
+    lote = s_lote.rjust(3,'0')
+
+    case self.cod_tipo_parcela
+      when 27
+        tipo_parcela = '1'
+      when 28
+        tipo_parcela = '2'
+      when 29
+        tipo_parcela = '3'
+      when 67
+        tipo_parcela = '4'
+      else
+        tipo_parcela = '0'
+    end
+
+    s_num_parcela = self.num.to_s.strip
+    num_parcela = s_num_parcela.rjust(3,'0')
+
+    via = get_via.to_s.strip[-1..-1]
+
+    seu_numero = loteamento + quadra + lote + tipo_parcela + num_parcela + via
+
+
+
   end
 
 
@@ -497,7 +588,7 @@ class Promissoria < ActiveRecord::Base
       tipo_parcela = 'entrada'
     end
     msg_via = get_via > 1 ? format(" %ia via", get_via.to_i) : ""
-    mensagem2 = format("Ref: NP (%s) %s de %s %s", tipo_parcela, self.num, self.num_total, msg_via).strip
+    mensagem2 = format("%s : NP %s de %s %s", self.venda.lote.to_label, self.num, self.num_total, msg_via).strip
   end
 
 
@@ -581,7 +672,7 @@ class Promissoria < ActiveRecord::Base
     f = File.new("/home/ricardo/hansafly/BDs/ruby/inserts/insert_titulos.sql", "w")
     CSV::Reader.parse(File.open("dados_csv/"+ arq, 'rb')) do |row|
       #      puts row
-      if row[0] != "lote" then
+      if row[0] != "lote"
         p row
         promissoria = Promissoria::get_promissoria(row[0], row[1])
 
@@ -601,10 +692,10 @@ class Promissoria < ActiveRecord::Base
   def Promissoria.proc_csv_pagamento_promissorias arq
     CSV::Reader.parse(File.open("dados_csv/"+ arq, 'rb')) do |row|
       #break if !row[0].is_null && row[0].data == 'stop'
-      if row[0] != "lote" then
+      if row[0] != "lote"
         p row
         promissoria = Promissoria::get_promissoria(row[0], row[1])
-        if !promissoria.pago? then
+        if !promissoria.pago?
           boleto = promissoria.gera_boleto(DateTime.now.strftime("%Y-%m-%d"), 3)
           boleto.pagamento row[2], row[3], row[4], row[5], row[6], '0.0', row[7], datacsv_to_datasql(row[8].to_s), row[9]
         else

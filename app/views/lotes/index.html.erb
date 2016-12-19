@@ -13,8 +13,15 @@
       <td align="left"><%= link_to lote.to_label, lote %></td>
 
     <%
-      status = Codigo::get_status(lote.cod_status_access)
-      comprador = lote.get_nome_comprador
+      venda = lote.get_venda
+      if !venda.nil? then
+        status = venda.get_status
+        comprador = lote.get_nome_comprador
+      else
+        status = :disponivel
+        comprador = Biblioteca::format_currency lote.get_preco
+      end
+
     %>
 
       <td align="left"><%=h status %></td>

@@ -58,12 +58,15 @@ Hf::Application.routes.draw do
   match 'reports/espelho2'  => 'reports#espelho2'
   match 'reports/etiquetas_iptu'  => 'reports#etiquetas_iptu'
   match 'reports/pagamentos_por_area'  => 'reports#pagamentos_por_area'
+  match 'reports/creditos_receber'  => 'reports#creditos_receber'
 
   match 'home/backup'  => 'home#backup'
   match 'home/restore'  => 'home#restore'
   
   match 'teste/index'  => 'teste#index'
   match 'teste/areac'  => 'teste#gera_areac'
+
+  match 'retorno/cobranca' => 'retorno#cobranca'
 
   resources :areas, :parcelas, :inadimplencia, :notas, :retorno
   resources :pessoas, :vendas, :categorias

@@ -3,7 +3,8 @@
 
 venda = @lote.get_venda
 if !venda.nil?
-  dados = venda.get_extrato
+  dados = venda.get_extrato Time.now
+  #dados = venda.get_extrato Time.new(2016,1,14)
   idx_venda = Idxpoupanca::calcula_indice_entre_dates(venda.get_data_venda, (Time.now).to_date, venda.tipo_correcao)
 
 end
@@ -34,7 +35,7 @@ end
 
   <tr>
     <td><b>Status</b></td>
-    <td align="center"><%=h Codigo::get_status(@lote.cod_status_access) %></td>
+    <td align="center"><%=h @lote.get_venda.get_status %></td>
   </tr>
 
   <tr>
@@ -88,9 +89,18 @@ end
 
 
     <tr>
-        <td>Devolução</td>
-        <td align="right"><%=h Biblioteca::format_currency (dados[:soma][:pago_atualizado] - ((idx_venda * venda.valor * 0.1) + (0.12 * dados[:soma][:pago_atualizado]))) %></td>
+        <td>Devolução (12%)</td>
+        <!--<td align="right"><%=h Biblioteca::format_currency (dados[:soma][:pago_atualizado] - ((idx_venda * venda.valor * 0.1) + (0.12 * dados[:soma][:pago_atualizado]))) %></td>-->
+        <td align="right"><%=h Biblioteca::format_currency (dados[:soma][:pago_atualizado] * 0.88 ) %></td>
     </tr>
+
+    <tr>
+        <td>Devolução (35%)</td>
+        <!--<td align="right"><%=h Biblioteca::format_currency (dados[:soma][:pago_atualizado] - ((idx_venda * venda.valor * 0.1) + (0.12 * dados[:soma][:pago_atualizado]))) %></td>-->
+        <td align="right"><%=h Biblioteca::format_currency (dados[:soma][:pago_atualizado] * 0.65 ) %></td>
+    </tr>
+
+
 
 
     <tr>

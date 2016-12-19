@@ -4,5 +4,5 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="ruby-2.1.6-p336" project-jdk-type="RUBY_SDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="false" project-jdk-name="ruby-2.1.8-p440" project-jdk-type="RUBY_SDK" />
 </project>

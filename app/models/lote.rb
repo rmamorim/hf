@@ -59,133 +59,22 @@ class Lote < ActiveRecord::Base
 
 
   def get_status_promissorias
-    i = 0
-
     # array
     # 0 - pagas
     # 1 - vincendas
     # 2 - atrasadas
     # 3 - > 90 dias
     # 4 - outros
+    #
+    # i_entrada
+    # i_mensal
+    # i_intermediaria
+    # a_entrada
+    # a_mensal
+    # a_intermediaria
+    # a_geral
 
-
-    i_mensal = 0
-    i_intermediaria = 0
-    i_entrada = 0
-    a_mensal = [0,0,0,0,0]
-    a_entrada = [0,0,0,0,0]
-    a_intermediaria = [0,0,0,0,0]
-    a_geral = [0,0,0,0,0]
-
-
-
-    venda = self.get_venda
-    promissorias = venda.promissorias
-    for p in promissorias do
-      case p.cod_tipo_parcela
-
-        ##
-        ##  Entrada
-        ##
-      when 27
-        i_entrada += 1
-
-        case p.get_status
-        when :paga
-          a_entrada[0] += 1
-        when :nao_paga
-          if p.dias_em_atraso > 0 then
-            if p.dias_em_atraso > 90 then
-              a_entrada[3] += 1
-              a_entrada[2] += 1
-            else
-              a_entrada[2] += 1
-            end
-          else
-            a_entrada[1] += 1
-          end
-        end
-
-
-        ##
-        ##  Intermediaria
-        ##
-      when 28
-        i_intermediaria += 1
-
-        case p.get_status
-        when :paga
-          a_intermediaria[0] += 1
-        when :nao_paga
-          if p.dias_em_atraso > 0 then
-            if p.dias_em_atraso > 90 then
-              a_intermediaria[3] += 1
-              a_intermediaria[2] += 1
-            else
-              a_intermediaria[2] += 1
-            end
-          else
-            a_intermediaria[1] += 1
-          end
-        when :liberada
-          a_intermediaria[4] += 1
-        when :desviada
-          a_intermediaria[4] += 1
-        end
-
-
-        ##
-        ##  Mensal
-        ##
-      when 29
-        i_mensal += 1
-
-        case p.get_status
-        when :paga
-          a_mensal[0] += 1
-        when :nao_paga
-          if p.dias_em_atraso > 0 then
-            if p.dias_em_atraso > 90 then
-              a_mensal[3] += 1
-              a_mensal[2] += 1
-            else
-              a_mensal[2] += 1
-            end
-          else
-            a_mensal[1] += 1
-          end
-
-          ##
-          ##  Outros
-          ##
-        when :liberada
-          a_mensal[4] += 1
-        when :desviada
-          a_mensal[4] += 1
-        end
-
-      end
-    end
-
-
-    a_geral[0] = a_entrada[0] + a_mensal[0] + a_intermediaria[0]
-    a_geral[1] = a_entrada[1] + a_mensal[1] + a_intermediaria[1]
-    a_geral[2] = a_entrada[2] + a_mensal[2] + a_intermediaria[2]
-    a_geral[3] = a_entrada[3] + a_mensal[3] + a_intermediaria[3]
-    a_geral[4] = a_entrada[4] + a_mensal[4] + a_intermediaria[4]
-
-    a = []
-    a.push self
-    a.push i_entrada
-    a.push i_mensal
-    a.push i_intermediaria
-    a.push a_entrada
-    a.push a_mensal
-    a.push a_intermediaria
-    a.push a_geral
-
-    return a
-
+    return self.get_venda.get_status_promissorias
   end
 
 
@@ -202,8 +91,11 @@ class Lote < ActiveRecord::Base
   end
 
 
+  def get_preco
+    return self.area.get_valor_superficie(self.superficie)
+  end
 
- 
+
 
   
 

@@ -93,8 +93,8 @@ end
   def Pagamento.boleto_pago boleto, retorno
 
     e = []
-    case boleto.status
-    when 38 then
+    #case boleto.status
+    #when 38 then
       pagamento = Pagamento.new
       pagamento.boleto_id = boleto.id
 
@@ -110,12 +110,12 @@ end
       pagamento.data_pagamento = retorno.data_pagamento
       pagamento.data_processamento = DateTime.now.strftime("%Y-%m-%d %H:%M:%S")
       pagamento.comentarios = format("Processado automaticamente em %s. Pagos %s no dia %s, em %s em %s. No dia %s foram depositados %s na conta corrente CEF. Foi descontada tarifa bancaria de %s.",
-        pagamento.data_processamento,
+        Biblioteca::format_data(pagamento.data_processamento),
         Biblioteca::to_my_moeda(pagamento.valor_pago),
-        pagamento.data_pagamento,
+        Biblioteca::format_data(pagamento.data_pagamento),
         Pagamento::forma_pgto_to_s(forma_pagamento),
         Pagamento::canal_pgto_to_s(canal_pagamento),
-        retorno.data_credito,
+        Biblioteca::format_data(retorno.data_credito),
         Biblioteca::to_my_moeda(retorno.credito),
         Biblioteca::to_my_moeda(retorno.tarifa)
       )
@@ -128,7 +128,7 @@ end
 
       e.push pagamento.comentarios
 
-    end
+    #end
 
     return e
 

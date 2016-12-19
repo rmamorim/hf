@@ -107,7 +107,7 @@ class Venda < ActiveRecord::Base
 
 
 
-  def get_extrato
+  def get_extrato data
   
     dados = {}
     soma = {}
@@ -142,7 +142,8 @@ class Venda < ActiveRecord::Base
     dados[:titulos] = t
 
     self.promissorias.sort{|a,b| a.data_vencimento <=> b.data_vencimento}.each do |p|
-      v = p.get_valores Time.now
+      #v = p.get_valores Time.now
+      v = p.get_valores data
 
       idx_poupanca = idx_poupanca_contrato = 0
       data_venda = p.venda.get_data_venda
@@ -222,5 +223,223 @@ class Venda < ActiveRecord::Base
   end
 
 
-  
+  def testa
+    processa_quitacao(30000,Time::local(2014,1,15).to_date)
+  end
+
+
+  def processa_quitacao valor, data
+    valor_total = 0
+    self.promissorias.each do|p|
+      if p.nao_pago? then
+        v = p.get_valores(data)
+        puts p
+        # puts data
+        # puts v[:valor_vencimento]
+        # puts v[:valor_contrato_corrigido]
+        puts v[:valor_mora]
+        puts v[:dias_atraso]
+        valor_total += v[:valor_mora]
+      end
+    end
+
+    puts "##########"
+    puts "Valor total = #{valor_total}"
+  end
+
+
+
+
+  def get_status_promissorias
+
+    # array
+    # 0 - pagas
+    # 1 - vincendas
+    # 2 - atrasadas
+    # 3 - > 90 dias
+    # 4 - outros
+    #
+    # i_entrada
+    # i_mensal
+    # i_intermediaria
+    # a_entrada
+    # a_mensal
+    # a_intermediaria
+    # a_geral
+
+    i = 0
+    i_mensal = 0
+    i_intermediaria = 0
+    i_entrada = 0
+    a_mensal = [0,0,0,0,0]
+    a_entrada = [0,0,0,0,0]
+    a_intermediaria = [0,0,0,0,0]
+    a_geral = [0,0,0,0,0]
+
+    promissorias = self.promissorias
+    for p in promissorias do
+      case p.cod_tipo_parcela
+
+        ##
+        ##  Entrada
+        ##
+        when 27, 67
+          i_entrada += 1
+
+          case p.get_status
+            when :paga
+              a_entrada[0] += 1
+            when :nao_paga
+              if p.dias_em_atraso > 0 then
+                if p.dias_em_atraso > 90 then
+                  a_entrada[3] += 1
+                  a_entrada[2] += 1
+                else
+                  a_entrada[2] += 1
+                end
+              else
+                a_entrada[1] += 1
+              end
+          end
+
+
+        ##
+        ##  Intermediaria
+        ##
+        when 28
+          i_intermediaria += 1
+
+          case p.get_status
+            when :paga
+              a_intermediaria[0] += 1
+            when :nao_paga
+              if p.dias_em_atraso > 0 then
+                if p.dias_em_atraso > 90 then
+                  a_intermediaria[3] += 1
+                  a_intermediaria[2] += 1
+                else
+                  a_intermediaria[2] += 1
+                end
+              else
+                a_intermediaria[1] += 1
+              end
+            when :liberada
+              a_intermediaria[4] += 1
+            when :desviada
+              a_intermediaria[4] += 1
+          end
+
+
+        ##
+        ##  Mensal
+        ##
+        when 29
+          i_mensal += 1
+
+          case p.get_status
+            when :paga
+              a_mensal[0] += 1
+            when :nao_paga
+              if p.dias_em_atraso > 0 then
+                if p.dias_em_atraso > 90 then
+                  a_mensal[3] += 1
+                  a_mensal[2] += 1
+                else
+                  a_mensal[2] += 1
+                end
+              else
+                a_mensal[1] += 1
+              end
+
+            ##
+            ##  Outros
+            ##
+            when :liberada
+              a_mensal[4] += 1
+            when :desviada
+              a_mensal[4] += 1
+          end
+
+      end
+    end
+
+    a_geral[0] = a_entrada[0] + a_mensal[0] + a_intermediaria[0]
+    a_geral[1] = a_entrada[1] + a_mensal[1] + a_intermediaria[1]
+    a_geral[2] = a_entrada[2] + a_mensal[2] + a_intermediaria[2]
+    a_geral[3] = a_entrada[3] + a_mensal[3] + a_intermediaria[3]
+    a_geral[4] = a_entrada[4] + a_mensal[4] + a_intermediaria[4]
+
+    a = []
+    a.push i_entrada
+    a.push i_mensal
+    a.push i_intermediaria
+    a.push a_entrada
+    a.push a_mensal
+    a.push a_intermediaria
+    a.push a_geral
+
+    return a
+  end
+
+
+
+  def get_status
+    # 0 - pagas
+    # 1 - vincendas
+    # 2 - atrasadas
+    # 3 - > 90 dias
+    # 4 - outros
+    a = self.get_status_promissorias
+
+    a_geral = a[6]
+
+    status = :indefinido
+
+    if a_geral[0] > 0 then
+      status = :quitado
+    end
+    if a_geral[1] > 0 then
+      status = :em_pagamento
+    end
+    if a_geral[2] > 0 then
+      status = :inadimplente
+    end
+    if a_geral[3] > 0 then
+      status = :inadimplente_grave
+    end
+
+    return status
+
+  end
+
+
+
+  def troca_dia_do_mes_promissorias novo_dia, promissoria_inicial, promissoria_final, tipo_promissoria = 29
+
+    promissorias = Promissoria.where('venda_id = ? AND cod_tipo_parcela = ? AND num BETWEEN ? and ?', self.id, tipo_promissoria, promissoria_inicial, promissoria_final).order('num')
+
+    promissorias.each do |p|
+      d = p.data_vencimento
+      novo_vencimento = Date.new(d.year,d.month,novo_dia)
+      p.data_vencimento = novo_vencimento
+      #puts novo_vencimento
+      p.save
+    end
+  end
+
+
+  def gera_boletos_intervalo_promissorias num_promissoria_inicial, num_promissoria_final, tipo_promissoria = 29
+
+    promissorias = Promissoria.where('venda_id = ? AND cod_tipo_parcela = ? AND num BETWEEN ? and ?', self.id, tipo_promissoria, num_promissoria_inicial, num_promissoria_final).order('num')
+
+    promissorias.each do |p|
+      puts "#{p.num} - #{p.data_vencimento}"
+      p.gera_boleto_automatico
+    end
+  end
+
+
+
+
+
 end

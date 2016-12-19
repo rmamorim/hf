@@ -1,5 +1,7 @@
 <h1><%=h format("Lote %s", @lote.to_label) %></h1>
 <%= link_to('Retornar', :controller => "lotes", :action => "index", :area_id => @lote.area.id) %>
+<!--<%= link_to 'Back', lotes_path %>-->
+<!--<%= link_to 'Edit', edit_lote_path(@lote) %>-->
 <hr/>
 
 
@@ -26,7 +28,7 @@ end
 
   <tr>
     <td><b>Status</b></td>
-    <td><%=h Codigo::get_status(@lote.cod_status_access) %></td>
+    <td><%=h @lote.get_venda.get_status %></td>
   </tr>
 
   <tr>
@@ -150,12 +152,12 @@ end
 <table cellpadding="2" cellspacing="1" border="1">
     <tr>
     <th>Parcela</th>
-    <th>vencimento</th>
-    <th>Valor</th>
+    <th>Vencimento</th>
+    <th>Tipo</th>
     <th>Status</th>
+    <th>Valor</th>
     <th>Atraso</th>
     <th>pagamento</th>
-
     <th>Valor vencimento</th>
     <th>Valor atual</th>
     <th>Valor pago</th>
@@ -196,8 +198,9 @@ end
         </td>
 
         <td align="center"><%=h Biblioteca::format_data p.data_vencimento %></td>
-        <td align="right"><%=h Biblioteca::format_currency(v[:valor_original]) %>  </td>
+        <td align="center"><%=h Codigo::get_status(p.cod_tipo_parcela) %></td>
         <td align="center"><%=h Codigo::get_status(p.cod_status) %></td>
+        <td align="right"><%=h Biblioteca::format_currency(v[:valor_original]) %>  </td>
         <td align="right"><%=h flag_pago ? v[:dias_atraso] : ''  %></td>
         <td align="center"><%=h flag_pago ? Biblioteca::format_data(v[:data_pagamento]) : '' %></td>
         <td align="right"><%=h Biblioteca::format_currency v[:valor_vencimento] %></td>

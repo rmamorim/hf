@@ -1,0 +1,45 @@
+<h2>Retorno - Cobrança</h2>
+<br/>
+
+<table border = "1">
+  <tr>
+    <th>Problemas</th>
+  </tr>
+  <% for e in @e %>
+      <tr>
+        <td align="left"><%=h e %></td>
+      </tr>
+  <% end %>
+</table>
+
+<br />
+
+<table border = "1">
+  <tr>
+    <th>&nbsp; </th>
+    <th>Parcela</th>
+    <th>Data de vencimento</th>
+    <th>Data de pagamento</th>
+    <th>Valor inicial</th>
+    <th>Valor boleto</th>
+    <th>Valor pago</th>
+  </tr>
+  <% cont = 0 %>
+  <% for a in @a %>
+      <tr>
+        <% cont = cont + 1 %>
+        <td><%=h cont.to_s  %> </td>
+        <td align="left"><%=h a.fetch(0) %></td>
+        <td align="center"><%=h a.fetch(1) %></td>
+        <td align="center"><%=h a.fetch(2) %></td>
+        <td align="right"><%=h a.fetch(3) %></td>
+        <td align="right"><%=h a.fetch(4) %></td>
+        <td align="right"><%=h a.fetch(5) %></td>
+      </tr>
+  <% end %>
+</table>
+
+
+
+
+

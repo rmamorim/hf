@@ -354,8 +354,8 @@ sql_type
 
   def gnucash2
 
-    #arq_db = "C:\\Dropbox\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
-    arq_db = "C:\\Onedrive\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
+    arq_db = "C:\\Dropbox\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
+    #arq_db = "C:\\Onedrive\\Hansa Fly\\Contabilidade\\GnuCash\\Hansafly.sqlite.gnucash"
     db = SQLite3::Database.new(arq_db)
 
     sql = <<sql_type
@@ -429,7 +429,6 @@ sql_type
 
 
   def pagamentos_por_area
-
     area = 30
 
     @dados = {}
@@ -441,7 +440,6 @@ sql_type
     titulos << 'Valor pago'
     titulos << 'Saldo devedor'
 
-
     sql = <<sql_type
     SELECT
     numero,
@@ -451,14 +449,12 @@ sql_type
     ORDER BY numero
 sql_type
 
-
     rs = Lote.find_by_sql sql
     rs.each do |l|
       lote = {}
       lote[:superficie] = l.superficie.to_i
       lotes[l.numero.to_i] = lote
     end
-
 
     sql = <<sql_type
     SELECT
@@ -467,7 +463,7 @@ sql_type
     FROM pagamentos p
     JOIN boletos b ON b.id = p.boleto_id
     JOIN promissorias pm ON pm.id = b.promissoria_id
-    JOIN vendas v ON v.id = pm.venda_id
+    JOIN vendas v ON v.id = pm.venda_id AND v.cod_status IN (51,52,65,53)
     JOIN lotes l ON l.id = v.lote_id
     JOIN areas a ON a.id = l.area_id and a.id = #{area}
     GROUP BY
@@ -483,15 +479,13 @@ sql_type
       sum_valor_pago += l.valor_pago.to_f
     end
 
-
-
     sql = <<sql_type
     SELECT
     p.id,
     l.numero as lote,
     p.valor_original as valor_parcela
     FROM promissorias p
-    JOIN vendas v ON v.id = p.venda_id
+    JOIN vendas v ON v.id = p.venda_id AND v.cod_status IN (51,52,65,53)
     JOIN lotes l ON l.id = v.lote_id
     JOIN areas a ON a.id = l.area_id and a.id = #{area}
 		WHERE p.cod_status IN (1,20,26)
@@ -511,14 +505,12 @@ sql_type
       sum_saldo_devedor += valor_parcela
     end
 
-
     colunas = []
     colunas << ''
     colunas << ''
     colunas << sum_valor_pago.to_currency(Currency::BRL)
     colunas << sum_saldo_devedor.to_currency(Currency::BRL)
     linhas << colunas
-
 
     lotes.sort_by { |key, value| key.to_i }.each { |key, value|
       colunas = []
@@ -529,9 +521,67 @@ sql_type
       linhas << colunas
     }
 
-
     @dados[:titulos] = titulos
     @dados[:linhas] = linhas
+  end
+
+
+
+
+  def creditos_receber
+
+    meses = {}
+
+#     sql = <<sql_type
+# SELECT
+# *
+# FROM promissorias p
+# WHERE cod_status IN (1,26)
+# ORDER BY data_vencimento
+# sql_type
+
+    sql = <<sql_type
+SELECT
+p.*,
+l.area_id
+FROM promissorias p
+JOIN vendas v
+ON v.id = p.venda_id
+JOIN lotes l
+ON l.id = v.lote_id
+WHERE p.cod_status IN (1,26)
+ORDER BY p.data_vencimento
+sql_type
+
+
+    # rs = Promissoria.find_by_sql sql
+    # rs.each do |p|
+    #   puts "#{p.data_vencimento} - #{p.venda.lote.area.id}"
+    # end
+
+    rs = Promissoria.find_by_sql sql
+    rs.each do |p|
+      pm = Promissoria.find(p.id)
+      v = pm.get_valores Time.now
+      valor = v[:valor_mora].nil? ? 0 : v[:valor_mora]
+      mes = "#{p.data_vencimento.year}-#{p.data_vencimento.month}"
+
+      if meses.has_key?(mes) then
+        #meses[mes][p.area_id] = meses[mes][p.area_id] + valor
+        area = (meses[mes])
+        area[p.area_id] =+ valor
+      else
+        area = {}
+        area[p.area_id] = valor
+        meses[mes] = area
+      end
+
+      puts "#{p.area_id} - #{p.data_vencimento} - #{Biblioteca::format_currency(valor)} - #{mes}"
+
+    end
+
+
+
 
   end
 
