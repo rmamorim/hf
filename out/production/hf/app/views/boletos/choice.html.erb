@@ -1,0 +1,163 @@
+<h2>Novo Boleto</h2>
+<p>
+  <%= link_to('Retornar', :controller => "promissorias", :action => "show", :id => @promissoria.id) %>
+</p>
+<br/>
+<%= error_messages_for :boleto %>
+
+
+
+
+
+<%
+
+v = @promissoria.get_valores Time.now
+
+
+parcela = format('%s/%s-%s/%s', \
+    @lote.area.nome,  \
+    (@lote.numero.to_s + @lote.subdivisao.to_s).strip,  \
+  @promissoria.num,  \
+  @promissoria.num_total)
+
+
+dias_atraso = v[:dias_atraso]
+atraso = time_ago_in_words(@promissoria.data_vencimento)
+
+idx = (v[:valor_contrato_corrigido] - v[:valor_original]) / v[:valor_original]
+idx = Biblioteca::arredonda_float(100.0 * idx, 4)
+
+  if dias_atraso > 0 then
+  data_default = 7.days.from_now
+  else
+    if dias_atraso > -7 then
+      data_default = 7.days.from_now
+    else
+      data_default = @promissoria.data_vencimento.to_time
+    end
+  end
+
+  tipo_correcao = Codigo::get_status @promissoria.venda.tipo_correcao
+%>
+
+  <table border = "1">
+    <tr>
+      <td>Parcela </td>
+      <td align ="center"><%=h parcela %> </td>
+    </tr>
+    <tr>
+      <td>vencimento original </td>
+      <td align ="center"> <%=h Biblioteca::format_data @promissoria.data_vencimento %> </td>
+    </tr>
+    <tr>
+      <td>Valor - parcela original </td>
+      <td align ="right"> <%=h Biblioteca::format_currency @promissoria.valor_original %> </td>
+    </tr>
+    <tr>
+      <td>Valor - boleto original </td>
+      <td align ="right"> <%=h Biblioteca::format_currency v[:valor_vencimento] %> </td>
+    </tr>
+    <tr>
+      <td>Valor - atual mora </td>
+      <td align ="right"> <%=h Biblioteca::format_currency v[:valor_mora] %> </td>
+    </tr>
+
+    <tr>
+      <td>Valor - atual corrigido <small>(do contrato até hoje)</small></td>
+      <td align ="right"> <%=h Biblioteca::format_currency v[:valor_contrato_corrigido] %> </td>
+    </tr>
+    <tr>
+      <td>Índice de correção <small>(do contrato até hoje)</small></td>
+      <td align ="right"> <%=h "#{idx} %" %> </td>
+    </tr>
+    <tr>
+      <td>Atraso </td>
+      <td align ="center"> <%=h format('%s dias (%s)', dias_atraso, atraso) %> </td>
+    </tr>
+    <tr>
+      <td>Multa (%) - atraso </td>
+      <td align ="right"> <%=h format('%s %', @promissoria.venda.multa) %> </td>
+    </tr>
+    <tr>
+      <td>Juros (% ao mês) - atraso </td>
+      <td align ="right"> <%=h format('%s %', @promissoria.venda.juros) %> </td>
+    </tr>
+    <tr>
+      <td>Tipo de reajuste </td>
+      <td align ="right"> <%=h tipo_correcao %> </td>
+    </tr>
+
+
+  </table>
+
+
+
+  <% if dias_atraso > 0 then %>
+    <br/>
+    <br/>
+    <hr/>
+    <h4> Boleto cobrando juros/multa por atraso</h4>
+    <% form_for :boleto, @boleto, :url => { :action => 'new_com_juros', :id => @promissoria }  do |f| %>
+
+      <p>multa por atraso:
+        <%= f.text_field :multa, :value => Biblioteca::arredonda_float(v[:multa],2) %>
+      </p>
+
+      <p>juros por atraso:
+        <%= f.text_field :juros, :value => Biblioteca::arredonda_float(v[:juros],2) %>
+      </p>
+
+      <p>novo valor:
+        <%= f.text_field :valor, :value => Biblioteca::arredonda_float(v[:valor_mora],2) %>
+      </p>
+
+      <p>novo vencimento:
+        <%= f.date_select(:data_vencimento, :order => [:day, :month, :year], :default => data_default) %>
+      </p>
+
+      <p>data base para cálculo:
+        <%= f.date_select(:data_base, :order => [:day, :month, :year], :default => data_default) %>
+      </p>
+
+      <p>
+        <%=  f.check_box(:especial) %>
+        boleto especial para pagamento em atraso.
+      </p>
+
+      <p>
+        <%= f.submit "Criar" %>
+      </p>
+
+    <% end %>
+  <% end %>
+
+
+
+
+
+  <br/>
+  <br/>
+  <hr/>
+  <h4> Boleto sem cobrar juros/multa por atraso </h4>
+  <% form_for :boleto, @boleto, :url => { :action => 'new_sem_juros', :id => @promissoria }  do |f| %>
+
+    <p>novo vencimento:
+      <%= f.date_select(:data_vencimento, :order => [:day, :month, :year], :default => data_default) %>
+    </p>
+
+    <p>data base p/ cálculo:
+      <%= f.date_select(:data_base, :order => [:day, :month, :year], :default => data_default) %>
+    </p>
+
+    <!---
+    <p>
+    <%=  f.check_box(:especial) %>
+     boleto especial para pagamento em atraso.
+    </p>
+    --->
+
+    <p>
+      <%= f.submit "Criar" %>
+    </p>
+
+  <% end %>

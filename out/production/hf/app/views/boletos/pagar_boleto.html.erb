@@ -1,0 +1,21 @@
+<h2>Efetua pagamento de boleto</h2>
+
+
+
+<%= error_messages_for :boleto %>
+
+
+<%
+  data_default = Time.now
+%>
+
+<br>
+<hr/>
+
+<%=h data_default %> <hr/>
+
+<% for d in @dados %>
+
+<%= d %> <br/>
+
+<% end %>

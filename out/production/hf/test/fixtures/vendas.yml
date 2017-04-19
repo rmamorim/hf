@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  cod_status: 1
+  cod_corretor: 1
+  valor: 9.99
+  correc_poup: false
+  data_contrato: 2010-11-29
+  data_escritura: 2010-11-29
+  dias_carencia: 1
+  multa: 9.99
+  juros: 9.99
+  tipo_correcao: 1
+  lote: 
+
+two:
+  cod_status: 1
+  cod_corretor: 1
+  valor: 9.99
+  correc_poup: false
+  data_contrato: 2010-11-29
+  data_escritura: 2010-11-29
+  dias_carencia: 1
+  multa: 9.99
+  juros: 9.99
+  tipo_correcao: 1
+  lote: 

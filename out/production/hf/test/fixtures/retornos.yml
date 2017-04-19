@@ -1,0 +1,29 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  valor: 9.99
+  tarifa: 9.99
+  encargos: 9.99
+  descontos: 9.99
+  abatimento: 9.99
+  credito: 9.99
+  data_vencimento: 2010-11-29
+  data_pagamento: 2010-11-29
+  data_credito: 2010-11-29
+  nosso_numero: MyString
+  dados_pagamento: MyString
+  arquivo: MyString
+
+two:
+  valor: 9.99
+  tarifa: 9.99
+  encargos: 9.99
+  descontos: 9.99
+  abatimento: 9.99
+  credito: 9.99
+  data_vencimento: 2010-11-29
+  data_pagamento: 2010-11-29
+  data_credito: 2010-11-29
+  nosso_numero: MyString
+  dados_pagamento: MyString
+  arquivo: MyString

@@ -1,0 +1,131 @@
+
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+
+<tr> 
+  <td><b>Id</b></td>
+  <td><%=h @lote.id %></td>
+</tr>
+
+
+<tr> 
+  <td><b>Lote</b></td>
+  <td><%=h @lote.area.nome + "-" + @lote.numero.to_s + @lote.subdivisao.to_s %></td>
+</tr>
+
+<tr> 
+  <td><b>Status</b></td>
+  <td><%=h Biblioteca::status_lote @lote.cod_status_access %></td>
+</tr>
+
+<tr> 
+  <td><b>Superficie</b></td>
+  <td><%=h @lote.superficie %></td>
+</tr>
+
+<tr> 
+  <td><b>Inscrição PMG</b></td>
+  <td><%=h @lote.inscricao_pmg %></td>
+</tr>
+
+<tr> 
+  <td><b>Código do sacado</b></td>
+  <td><%=h @lote.cod_sacado %></td>
+</tr>
+
+<tr> 
+  <td><b>Comprador</b></td>
+  <td><%=h @lote.cliente.proprietario %></td>
+</tr>
+
+<tr> 
+  <td><b>Data do contrato</b></td>
+  <td> <%=h Biblioteca::format_data @lote.data_contrato %></td>
+</tr>
+
+<tr> 
+  <td><b>Valor total</b></td>
+  <td><%=h Biblioteca::format_currency @lote.valor_total %></td>
+</tr>
+
+<tr> 
+  <td><b>Entrada</b></td>
+  <td> <%=h Biblioteca.format_entrada @lote.qtd_p_entrada, @lote.valor_p_entrada %> </td>
+</tr>
+
+<tr> 
+  <td><b>Data da 1a Parcela</b></td>
+  <td> <%=h Biblioteca::format_data @lote.data_primeira_parcela %></td>
+</tr>
+
+<tr> 
+  <td><b>Parcelas</b></td>
+  <td><%=h Biblioteca::format_parcelas @lote.qtd_p1, @lote.valor_p1, @lote.qtd_p2, @lote.valor_p2 %></td>
+</tr>
+
+<tr> 
+  <td><b>Comentários</b></td>
+  <td><%=h @lote.comentario %></td>
+</tr>
+
+</table>
+
+
+<p>---------------------------------------</p>
+
+<%= link_to 'Nova Nota', new_nota_path + "/" + @lote.id.to_s %>
+
+<p>---------------------------------------</p>
+  
+<% for nota in @lote.notas %>
+<p>
+  <font size="2" color="#0000FF"><strong><%=h nota.created_at.strftime("%d/%m/%Y - %H:%M") %> </strong></font><br>
+<%= nota.mensagem %> <br>
+</p>  
+  
+<% end %>
+
+<p>---------------------------------------</p>
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+  <tr>
+    <th>Número</th>
+    <th>Vencimento</th>
+    <th>Pagamento</th>
+    <th>Status</th>
+    <th>Valor original</th>
+    <th>Atualização</th>
+    <th>Valor Pago</th>
+    <th>Comentários</th>
+  </tr>
+
+<% for parcela in @lote.parcelas %>
+
+
+  <tr>          
+
+    
+    <td align="center"><%= link_to parcela.numero, parcela %></td>
+    
+    <td align="center"><%=h parcela.data_vencimento.strftime("%d/%m/%Y") %></td>  
+    <td align="center"><%=h Biblioteca::format_data parcela.data_pagamento %></td>  
+    <td align="center"><%=h Biblioteca::status_parcela parcela.cod_status %></td>    
+    <td align="right"><%=h Biblioteca::format_currency parcela.valor_original %></td>    
+    <td align="right"><%=h Biblioteca::format_currency parcela.atualizacao %></td>    
+    <td align="right"><%=h Biblioteca::format_currency parcela.valor_pago %></td>    
+    <td align="center"><%=h parcela.comentarios %></td>
+  </tr>
+<% end %>
+</table>
+
+
+
+
+
+<%= link_to 'Edit', edit_lote_path(@lote) %> |
+<%= link_to 'Back', lotes_path %>

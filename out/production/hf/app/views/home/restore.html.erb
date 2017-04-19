@@ -1,0 +1,29 @@
+<h2>Restore de Backup.</h2>
+<br/>
+<br/>
+<h3> <%= @msg  %> </h3>
+<hr/>
+<br/>
+
+<% @arqs.each do |arq| %>
+
+<table>
+
+  <tr><td><%=
+      link_to(arq,
+        :controller => "home",
+        :action => "restore",
+        :arq_nome => arq)
+    %></td></tr>
+
+
+<% end %>
+</table>
+
+<br/>
+<hr/>
+<br/>
+
+<p> <%= link_to 'Retornar', :controller => "home" %> </p>
+
+

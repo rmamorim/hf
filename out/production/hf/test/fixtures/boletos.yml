@@ -1,0 +1,45 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  status: 1
+  nosso_numero: MyString
+  cod_sac: 1
+  seu_numero: MyString
+  data_vencimento: 2010-11-29
+  data_emissao: 2010-11-29
+  valor_original: 9.99
+  atualizacao: 9.99
+  perc_poup: 9.99
+  valor_titulo: 9.99
+  valor_multa: 9.99
+  valor_juros: 9.99
+  mensagem1: MyString
+  mensagem2: MyString
+  mensagem3: MyString
+  mensagem4: MyString
+  mensagem5: MyString
+  mensagem6: MyString
+  tipo: 1
+  promissoria: 
+
+two:
+  status: 1
+  nosso_numero: MyString
+  cod_sac: 1
+  seu_numero: MyString
+  data_vencimento: 2010-11-29
+  data_emissao: 2010-11-29
+  valor_original: 9.99
+  atualizacao: 9.99
+  perc_poup: 9.99
+  valor_titulo: 9.99
+  valor_multa: 9.99
+  valor_juros: 9.99
+  mensagem1: MyString
+  mensagem2: MyString
+  mensagem3: MyString
+  mensagem4: MyString
+  mensagem5: MyString
+  mensagem6: MyString
+  tipo: 1
+  promissoria: 

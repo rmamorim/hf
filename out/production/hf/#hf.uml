@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>RailsDependency</ID>
+  <OriginalElement>#hf</OriginalElement>
+  <nodes>
+    <node x="20.0" y="278.2500000000001">Cliente</node>
+    <node x="1286.0" y="1567.25">Parcela</node>
+    <node x="940.0" y="917.0000000000001">Venda</node>
+    <node x="1125.0" y="1567.25">IptuPagamento</node>
+    <node x="1573.5" y="639.2500000000001">Comprador</node>
+    <node x="1021.0" y="0.0">Iptu</node>
+    <node x="908.0" y="1567.25">Idxpoupanca</node>
+    <node x="910.0" y="450.0000000000001">Pessoa</node>
+    <node x="0.0" y="370.2500000000001">Area</node>
+    <node x="665.0" y="1567.25">Codigo</node>
+    <node x="1101.0" y="313.0000000000001">Nota</node>
+    <node x="0.0" y="1567.25">Retorno</node>
+    <node x="1884.0" y="853.2500000000001">Boleto</node>
+    <node x="2704.0" y="1051.25">Pagamento</node>
+    <node x="1513.0" y="1073.25">Promissoria</node>
+    <node x="426.0" y="1578.25">Categoria</node>
+    <node x="226.0" y="68.27272727272737">Lote</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Promissoria" target="Boleto">
+      <point x="145.5" y="-0.0" />
+      <point x="-370.0" y="-0.0" />
+    </edge>
+    <edge source="Lote" target="Iptu">
+      <point x="302.0" y="-201.0" />
+      <point x="910.0" y="136.5" />
+      <point x="-150.5" y="-0.0" />
+    </edge>
+    <edge source="Lote" target="Nota">
+      <point x="302.0" y="-0.0" />
+      <point x="910.0" y="361.5000000000001" />
+      <point x="-70.5" y="-0.0" />
+    </edge>
+    <edge source="Venda" target="Comprador">
+      <point x="231.5" y="-90.25" />
+      <point x="1433.0" y="1007.2500000000001" />
+      <point x="1513.0" y="712.0000000000001" />
+      <point x="-85.0" y="24.25" />
+    </edge>
+    <edge source="Lote" target="Venda">
+      <point x="302.0" y="201.0" />
+      <point x="910.0" y="1097.5" />
+      <point x="-231.5" y="-0.0" />
+    </edge>
+    <edge source="Boleto" target="Pagamento">
+      <point x="370.0" y="-0.0" />
+      <point x="-163.0" y="-0.0" />
+    </edge>
+    <edge source="Venda" target="Promissoria">
+      <point x="231.5" y="90.25" />
+      <point x="-145.5" y="-0.0" />
+    </edge>
+    <edge source="Cliente" target="Lote">
+      <point x="53.0" y="-0.0" />
+      <point x="146.0" y="304.2500000000001" />
+      <point x="-302.0" y="-150.75" />
+    </edge>
+    <edge source="Area" target="Lote">
+      <point x="73.0" y="-0.0" />
+      <point x="-302.0" y="150.75" />
+    </edge>
+    <edge source="Pessoa" target="Comprador">
+      <point x="261.5" y="-0.0" />
+      <point x="-85.0" y="-24.25" />
+    </edge>
+    <edge source="Categoria" target="Codigo">
+      <point x="79.5" y="-0.0" />
+      <point x="-99.0" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.8403278688524589" x="607.6160749122123" y="350.0557939914164" />
+  <SelectedNodes>
+    <node>Lote</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Association fields</Category>
+    <Category>Migration fields</Category>
+  </Categories>
+</Diagram>
+

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'win32ole'
+#require 'win32ole'
 require 'fileutils'
  
 
@@ -211,6 +211,40 @@ class Biblioteca
     s = d.day.to_s + '/' + d.month.to_s + '/' + d.year.to_s
     return s
   end
+
+
+
+  def Biblioteca.mes2nome m
+    case m
+      when 1
+        mes = 'Janeiro'
+      when 2
+        mes = 'Fevereiro'
+      when 3
+        mes = 'Março'
+      when 4
+        mes = 'Abril'
+      when 5
+        mes = 'Maio'
+      when 6
+        mes = 'Junho'
+      when 7
+        mes = 'Julho'
+      when 8
+        mes = 'Agosto'
+      when 9
+        mes = 'Setembro'
+      when 10
+        mes = 'Outubro'
+      when 11
+        mes = 'Novembro'
+      when 12
+        mes = 'Dezembro'
+    end
+    return mes
+  end
+
+
 
 
 
@@ -509,15 +543,19 @@ class Minha
 
   def get_tb_sacado_windows
     cnn = WIN32OLE.new('ADODB.Connection')
-    cnn.Open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\Caixa\\acesso_cef.mdb')
+    #cnn.Open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\Caixa\\acesso_cef.mdb')
+    arq = "C:\\Dropbox\\Cobranca\\Cobranca\\BDSINCO.mdb"
+    password = "CEF104"
+    cnn.Open("Provider=Microsoft.Jet.OLEDB.4.0;Jet OLEDB:Database Password=#{password};Data Source=#{arq}")
 
-    sql = "SELECT * FROM tbSacado"
+    #sql = "SELECT * FROM tbSacado"
+    sql = "SELECT ssacaCodSacado, ssacaCPFCNPJ FROM tabSacado"
     rs = WIN32OLE.new('ADODB.Recordset')
     rs.Open(sql, cnn)
     data = rs.GetRows.transpose
     data.each do |d|
-      cod_sacado = d[1]
-      cpf = d[6]
+      cod_sacado = d[0]
+      cpf = d[1]
       @cpfs[cod_sacado] = cpf
     end
 

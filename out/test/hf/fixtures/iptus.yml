@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  ano: 9.99
+  valor_imposto: 9.99
+  valor_taxa: 9.99
+  valor_tsu: 9.99
+  valor_total: 9.99
+  titular: MyString
+  pago: false
+  multa: 9.99
+  juros: 9.99
+  da: false
+  lote: 
+
+two:
+  ano: 9.99
+  valor_imposto: 9.99
+  valor_taxa: 9.99
+  valor_tsu: 9.99
+  valor_total: 9.99
+  titular: MyString
+  pago: false
+  multa: 9.99
+  juros: 9.99
+  da: false
+  lote: 

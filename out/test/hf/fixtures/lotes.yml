@@ -1,0 +1,51 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  numero: 9.99
+  subdivisao: MyString
+  superficie: 9.99
+  inscricao_pmg: 9.99
+  cod_cliente_access: 1
+  cod_vendedor_access: 1
+  cod_status_access: 1
+  area_access: 1
+  qtd_p_entrada: 1
+  valor_p_entrada: 9.99
+  qtd_p1: 1
+  valor_p1: 9.99
+  qtd_p2: 1
+  valor_p2: 9.99
+  data_contrato: 2010-11-29
+  data_primeira_parcela: 2010-11-29
+  valor_total: 9.99
+  rubrica_comprador: false
+  comentario: MyText
+  cod_sacado: MyString
+  area: 
+  cliente_id: 1
+  vendedor_id: 1
+
+two:
+  numero: 9.99
+  subdivisao: MyString
+  superficie: 9.99
+  inscricao_pmg: 9.99
+  cod_cliente_access: 1
+  cod_vendedor_access: 1
+  cod_status_access: 1
+  area_access: 1
+  qtd_p_entrada: 1
+  valor_p_entrada: 9.99
+  qtd_p1: 1
+  valor_p1: 9.99
+  qtd_p2: 1
+  valor_p2: 9.99
+  data_contrato: 2010-11-29
+  data_primeira_parcela: 2010-11-29
+  valor_total: 9.99
+  rubrica_comprador: false
+  comentario: MyText
+  cod_sacado: MyString
+  area: 
+  cliente_id: 1
+  vendedor_id: 1

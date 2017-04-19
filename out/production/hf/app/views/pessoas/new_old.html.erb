@@ -1,0 +1,117 @@
+<h3>Nova Pessoa</h3>
+
+<%= error_messages_for :pessoa %>
+
+<%= @venda_id %>
+
+<% form_for @pessoa, :url => {:action => "create", :venda_id => @venda_id } do |f| %>
+
+  <table>
+
+    <tr>
+      <td>CPF</td>
+      <td><%= f.text_field :cpf %></td>
+    </tr>
+
+    <tr>
+      <td>Tratamento</td>
+      <td><%= f.text_field :tratamento %></td>
+    </tr>
+
+    <tr>
+      <td>Nome</td>
+      <td><%= f.text_field :nome %></td>
+    </tr>
+
+    <tr>
+      <td>Sexo</td>
+      <td><%= f.text_field :sexo %></td>
+    </tr>
+
+    <tr>
+      <td>Estado Civil</td>
+      <td><%= f.text_field :estado_civil %></td>
+    </tr>
+
+    <tr>
+      <td>Identidade</td>
+      <td><%= f.text_field :identidade %></td>
+    </tr>
+
+    <tr>
+      <td>(emissor)</td>
+      <td><%= f.text_field :identidade_emissor %></td>
+    </tr>
+
+    <tr>
+      <td>(data)</td>
+      <td><%= f.text_field :identidade_data %></td>
+    </tr>
+
+
+    <tr>
+      <td><hr/></td>
+      <td><hr/></td>
+    </tr>
+
+    <tr>
+      <td>Endereço</td>
+      <td><%= f.text_field :endereco %></td>
+    </tr>
+
+    <tr>
+      <td>Bairro</td>
+      <td><%= f.text_field :bairro %></td>
+    </tr>
+
+    <tr>
+      <td>Cidade</td>
+      <td><%= f.text_field :cidade %></td>
+    </tr>
+
+    <tr>
+      <td>UF</td>
+      <td><%= f.text_field :uf %></td>
+    </tr>
+
+    <tr>
+      <td>CEP</td>
+      <td><%= f.text_field :cep %></td>
+    </tr>
+
+    <tr>
+      <td><hr/></td>
+      <td><hr/></td>
+    </tr>
+
+    <tr>
+      <td>Telefone</td>
+      <td><%= f.text_field :telefone %></td>
+    </tr>
+
+    <tr>
+      <td>Celular</td>
+      <td><%= f.text_field :celular %></td>
+    </tr>
+
+    <tr>
+      <td>e-mail</td>
+      <td><%= f.text_field :email %></td>
+    </tr>
+
+
+  </table>
+
+  <p>
+    <%= f.submit "Inserir" %>
+  </p>
+<% end %>
+
+
+
+<%=    link_to("Retornar",
+  :controller => "compradores",
+  :action => "destroy",
+  :id => 1
+)
+%>

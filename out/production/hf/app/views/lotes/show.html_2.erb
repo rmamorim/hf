@@ -1,0 +1,214 @@
+
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+
+  <tr>
+    <td><b>Id</b></td>
+    <td><%=h @lote.id %></td>
+  </tr>
+
+
+  <tr>
+    <td><b>Lote</b></td>
+    <td><%=h @lote.area.nome + "-" + @lote.numero.to_s + @lote.subdivisao.to_s %></td>
+  </tr>
+
+  <tr>
+    <td><b>Status</b></td>
+    <td><%=h 1 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Superficie</b></td>
+    <td><%=h @lote.superficie %></td>
+  </tr>
+
+  <tr>
+    <td><b>Inscrição PMG</b></td>
+    <td><%=h @lote.inscricao_pmg %></td>
+  </tr>
+
+  <tr>
+    <td><b>Código do sacado</b></td>
+    <td><%=h @lote.cod_sacado %></td>
+  </tr>
+
+  <tr>
+    <td><b>Comprador</b></td>
+    <td><%=h 2 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Data do contrato</b></td>
+    <td> <%=h @lote.get_venda.get_data_venda %></td>
+  </tr>
+
+  <tr>
+    <td><b>Valor total</b></td>
+    <td><%=h Biblioteca::format_currency @lote.valor_total %></td>
+  </tr>
+
+  <tr>
+    <td><b>Entrada</b></td>
+    <td> <%=h Biblioteca.format_entrada @lote.qtd_p_entrada, @lote.valor_p_entrada %> </td>
+  </tr>
+
+  <tr>
+    <td><b>Data da 1a Parcela</b></td>
+    <td> <%=h 4 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Parcelas</b></td>
+    <td><%=h 5 %></td>
+  </tr>
+
+  <tr>
+    <td><b>Comentários</b></td>
+    <td><%=h @lote.comentario %></td>
+  </tr>
+
+  <tr>
+    <td><b>Venda.id</b></td>
+    <td><%=h @lote.get_venda.id %></td>
+  </tr>
+
+</table>
+
+
+<p>---------------------------------------</p>
+
+<%= link_to 'Nova Nota', new_nota_path + "/" + @lote.id.to_s %>
+
+<p>---------------------------------------</p>
+
+<table cellpadding="0" cellspacing="0" border="1">
+
+<% for nota in @lote.notas %>
+  <tr>
+    <td>
+      <font size="1" color="#881236"><strong><%=h nota.created_at.strftime("%d/%m/%Y") %> </strong></font><br>
+    </td>
+    <td>
+    <%= nota.mensagem %> <br>
+    </td>
+  </tr>
+
+<% end %>
+
+</table>
+
+<p>---------------------------------------</p>
+
+
+
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+  <tr>
+    <th>Parcela</th>
+    <th>Status</th>
+    <th>Data de vencimento</th>
+    <th>Data de pagamento</th>
+    <th>Valor Pago</th>
+    <th>Data emissão dos boletos</th>    
+    <th>Valor original</th>
+    <th>Valor dos boletos</th>
+    <th>Valor pagamento em atraso</th>
+    <th>Dias atraso</th>
+    <th>Multa atraso</th>
+    <th>Juros atraso</th>
+    <th>Ação</th>
+
+    <th>Comentários</th>
+  </tr>
+
+  <%
+
+  
+
+  venda = @lote.get_venda
+  if !venda.nil?
+
+    #for p in venda.promissorias
+    venda.promissorias.sort{|a,b| a.data_vencimento <=> b.data_vencimento}.each do |p|
+      
+      if p.pago?
+        flag_pago = true
+        dias = ""
+        multa = ""
+        juros = ""
+        pagamento_atraso = ""
+
+        boleto_pago = p.get_boleto_pago
+        valor_pago = boleto_pago.pagamento.valor_pago
+        data_pagamento = boleto_pago.pagamento.data_pagamento
+        comentarios = boleto_pago.pagamento.comentarios
+
+
+
+      else
+        flag_pago = false
+        valor_promissoria_dt_vencimento = p.get_valor_data_vencimento_original
+        dias = p.dias_em_atraso
+
+        if dias > 0 then
+          multa = Biblioteca::arredonda_float(venda.multa / 100.0 * valor_promissoria_dt_vencimento, 2)
+          juros = Biblioteca::arredonda_float(valor_promissoria_dt_vencimento * 0.01 /30 * dias, 2)
+          pagamento_atraso = Biblioteca::arredonda_float(multa + juros + valor_promissoria_dt_vencimento, 2)
+        else
+          multa = ""
+          juros = ""
+          pagamento_atraso = ""
+        end
+      end
+
+
+
+    %>
+
+      <tr>
+        <td align="center"><%=h format('%s/%s', p.num, p.num_total) %></td>
+        <td align="left"><%=h Codigo::get_status(p.cod_status) %></td>
+        <td align="center"><%=h p.data_vencimento %></td>
+        <td align="center"><%=h flag_pago ? data_pagamento : '' %></td>
+        <td align="right"><%=h flag_pago ? valor_pago : '' %></td>
+        <td align="center"><%=h p.get_data_boletos  %></td>
+
+        
+        <td align="right"><%=h p.valor_original %></td>
+        <td align="center"><%=h p.get_valor_boletos  %></td>
+
+        <td align="right"><%=h pagamento_atraso %></td>
+
+        <td align="right"><%=h p.dias_em_atraso  %></td>
+        <td align="right"><%= multa %></td>
+        <td align="right"><%= juros %></td>
+
+        <td align="right"><%= flag_pago ? '' : link_to("boleto",
+                                                        :controller => "boletos",
+                                                        :action => "choice",
+                                                        :promissoria => p.id,
+                                                        :lote => @lote
+                                                        )
+                           %></td>
+        
+        <td align="center"><%=h flag_pago ? comentarios : '' %></td>
+      </tr>
+    <%
+    end
+  end
+  %>
+  </table>
+
+
+
+
+
+
+
+
+
+  <%= link_to 'Edit', edit_lote_path(@lote) %> |
+  <%= link_to 'Back', lotes_path %>

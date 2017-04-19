@@ -1,0 +1,32 @@
+<h1>Gera boletos avulsos</h1>
+
+
+<%= error_messages_for :boleto %>
+
+
+<hr/>
+<h3> Boletos a serem gerados: </h3>
+<% form_for :boleto, :url => { :action => 'processa_gera_avulsos' }  do |f| %>
+  <table>
+    <tr>
+      <td>Vencimento: <%= f.date_select(:data_vencimento, :order => [:day, :month, :year]) %></td>
+    </tr>
+
+    <tr><td><br/></td></tr>
+    <tr><td><br/></td></tr>
+    <tr><td><br/></td></tr>
+    
+    <tr>
+      <td>Boletos: <%= f.text_field :valor,  :size => 20 %> </td>
+    </tr>
+    <tr>
+      <td>Não receber após <%= f.text_field :dias_permitido_receber, :value => "90", :size => 2 %> dias.</td>
+    </tr>
+
+  </table>
+
+  <p>
+    <%= f.submit "Criar" %>
+  </p>
+
+<% end %>

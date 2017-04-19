@@ -1,0 +1,19 @@
+<h2>Sistema Hansa Fly - GnuCash</h2>
+<hr/>
+
+
+
+<table cellpadding="2" cellspacing="1" border="1">
+  <%
+     @l.each do |r|
+  %>
+      <tr>
+        <%
+           r.each do |c|
+        %>
+            <td> <%=h c %> </td>
+        <%  end %>
+      </tr>
+  <%  end %>
+
+</table>

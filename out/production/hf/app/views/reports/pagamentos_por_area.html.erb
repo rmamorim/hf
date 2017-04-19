@@ -1,0 +1,32 @@
+<p>
+    Teste!
+</p>
+<br/>
+<br/>
+
+
+<table cellpadding="2" cellspacing="1" border="1">
+    <tr>
+        <%
+           titulos = @dados[:titulos]
+           titulos.each do |t|
+        %>
+            <th> <%=h t %> </th>
+        <%  end %>
+    </tr>
+
+
+    <%
+       linhas = @dados[:linhas]
+       linhas.each do |linha|
+    %>
+        <tr>
+            <%
+               linha.each do |coluna|
+            %>
+                <td> <%=h coluna %> </td>
+            <%  end %>
+        </tr>
+    <%  end %>
+
+</table>

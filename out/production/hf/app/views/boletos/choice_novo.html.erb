@@ -1,0 +1,153 @@
+<h2>Gerador de novo boleto - (nova versão)</h2>
+<p>
+  <%= link_to('Retornar', :controller => "promissorias", :action => "show", :id => @promissoria.id) %>
+</p>
+<br/>
+<%= error_messages_for :boleto %>
+
+
+
+
+
+<%
+
+v = @promissoria.get_valores Time.now
+
+
+parcela = format('%s/%s-%s/%s', \
+    @lote.area.nome,  \
+    (@lote.numero.to_s + @lote.subdivisao.to_s).strip,  \
+  @promissoria.num,  \
+  @promissoria.num_total)
+
+
+dias_atraso = v[:dias_atraso]
+atraso = time_ago_in_words(@promissoria.data_vencimento)
+
+idx = (v[:valor_contrato_corrigido] - v[:valor_original]) / v[:valor_original]
+idx = Biblioteca::arredonda_float(100.0 * idx, 4)
+
+  if dias_atraso > 0 then
+  data_default = 7.days.from_now
+  else
+    if dias_atraso > -7 then
+      data_default = 7.days.from_now
+    else
+      data_default = @promissoria.data_vencimento.to_time
+    end
+  end
+
+  tipo_correcao = Codigo::get_status @promissoria.venda.tipo_correcao
+%>
+
+
+
+  <table border = "1" cellspacing="0" cellpadding="1%">
+    <tr>
+      <td>Parcela </td>
+      <td align ="center"><%=h parcela %> </td>
+    </tr>
+    <tr>
+      <td>vencimento original </td>
+      <td align ="center"> <%=h Biblioteca::format_data @promissoria.data_vencimento %> </td>
+    </tr>
+    <tr>
+      <td>Valor - parcela original </td>
+      <td align ="right"> <%=h Biblioteca::format_currency @promissoria.valor_original %> </td>
+    </tr>
+    <tr>
+      <td>Valor - boleto original </td>
+      <td align ="right"> <%=h Biblioteca::format_currency v[:valor_vencimento] %> </td>
+    </tr>
+    <tr>
+          <td>Valor - atual corrigido <small>(do contrato até hoje)</small></td>
+          <td align ="right"> <%=h Biblioteca::format_currency v[:valor_contrato_corrigido] %> </td>
+        </tr>
+    <tr>
+      <td>Valor - atual mora </td>
+      <td align ="right"> <%=h Biblioteca::format_currency v[:valor_mora] %> </td>
+    </tr>
+    <tr>
+      <td>Atraso </td>
+      <td align ="center"> <%=h format('%s dias (%s)', dias_atraso, atraso) %> </td>
+    </tr>
+    <tr>
+      <td>Índice de correção <small>(do contrato até hoje)</small></td>
+      <td align ="right"> <%=h "#{idx} %" %> </td>
+    </tr>
+    <tr>
+      <td>Multa (%) - atraso </td>
+      <td align ="right"> <%=h format('%s %', @promissoria.venda.multa) %> </td>
+    </tr>
+    <tr>
+      <td>Juros (% ao mês) - atraso </td>
+      <td align ="right"> <%=h format('%s %', @promissoria.venda.juros) %> </td>
+    </tr>
+    <tr>
+      <td>Tipo de reajuste </td>
+      <td align ="right"> <%=h tipo_correcao %> </td>
+    </tr>
+
+
+  </table>
+
+
+
+  <% if dias_atraso > 0 then %>
+    <br/>
+    <br/>
+    <hr/>
+    <% encargos = v[:multa] + v[:juros] + v[:correcao_monetaria] %>
+    <h3> Boleto de Parcela Atrasada</h3>
+    <% form_for :boleto, @boleto, :url => { :action => 'gera_boleto_manual_vencido', :id => @promissoria }  do |f| %>
+    <table>
+
+      <tr><td>Encargos = Multa + Juros + Correção Monetária</br>
+        <%= "#{Biblioteca::format_currency encargos} = #{Biblioteca::format_currency v[:multa]} + #{Biblioteca::format_currency v[:juros]} + #{Biblioteca::format_currency v[:correcao_monetaria]}" %>
+      </td></tr>
+
+      <tr><td>Valor:
+        <%= Biblioteca::format_currency v[:valor_mora] %>
+      </td></tr>
+
+      <tr><td>Desconto: R$
+        <%= f.text_field :desconto, :value => "0", :size => 6 %>
+      </td></tr>
+
+      <tr><td>Vencimento:
+        <%= f.date_select(:data_vencimento, :order => [:day, :month, :year], :default => data_default) %>
+      </td></tr>
+
+    </table>
+
+      <p>
+        <%= f.submit "Criar" %>
+      </p>
+
+    <% end %>
+  <% end %>
+
+
+  <br/>
+  <hr/>
+  <h3> Boleto Vincendo </h3>
+  <% form_for :boleto, @boleto, :url => { :action => 'gera_boleto_manual_vincendo', :id => @promissoria }  do |f| %>
+    <table>
+      <tr>
+        <td>Vencimento: <%= f.date_select(:data_vencimento, :order => [:day, :month, :year], :default => data_default) %></td>
+      </tr>
+
+      <tr>
+        <td>Valor: <%= f.text_field :valor, :value => Biblioteca::arredonda_float(v[:valor_vencimento], 2), :size => 8 %> </td>
+      </tr>
+      <tr>
+        <td>Não receber após <%= f.text_field :dias_permitido_receber, :value => "90", :size => 2 %> dias.</td>
+      </tr>
+
+    </table>
+
+    <p>
+      <%= f.submit "Criar" %>
+    </p>
+
+  <% end %>

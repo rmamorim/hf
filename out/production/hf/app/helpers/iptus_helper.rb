@@ -1,0 +1,2 @@
+module IptusHelper
+end

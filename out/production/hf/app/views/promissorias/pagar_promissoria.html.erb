@@ -1,0 +1,12 @@
+<h2>Registrado pagamento de promissoria do tipo Entrada</h2>
+<br/>
+<hr/>
+<br/>
+
+<%=
+    link_to(format("Lote %s-%s", @lote.area.nome, @lote.numero.to_s + @lote.subdivisao.to_s),
+            :controller => "lotes",
+            :action => "show",
+            :id => @lote.id
+    )
+%>

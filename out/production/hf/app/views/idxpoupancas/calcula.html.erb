@@ -1,0 +1,72 @@
+<h3>Calcula índice de caderneta de poupança entre 2 datas</h3>
+
+
+<%
+
+if !@dados.nil? then
+  dia_inicio = @dados["data_inicio(3i)"].to_i
+  mes_inicio = @dados["data_inicio(2i)"].to_i
+  ano_inicio = @dados["data_inicio(1i)"].to_i
+  dia_fim = @dados["data_fim(3i)"].to_i
+  mes_fim = @dados["data_fim(2i)"].to_i
+  ano_fim = @dados["data_fim(1i)"].to_i
+
+  valor = @dados[:valor]
+
+else
+  agora = Time.now
+  antes = 1.year.ago
+
+  dia_inicio = antes.day
+  mes_inicio = antes.month
+  ano_inicio = antes.year
+  dia_fim = agora.day
+  mes_fim = agora.month
+  ano_fim = agora.year
+
+  valor = 100
+end
+%>
+
+
+<br>
+<hr/>
+
+<table>
+
+  <% form_for :idxpoupanca, :url => { :action => 'calcula' }  do |f| %>
+
+    <tr><td>Valor inicial:</td>
+      <td><%= f.text_field :valor, :size => 8, :value => valor %></td>
+    </tr>
+
+    <tr><td>Data início do intervalo:</td>
+      <td><%= f.date_select(:data_inicio, :order => [:day, :month, :year], :default => {:day => dia_inicio, :month => mes_inicio, :year => ano_inicio}) %></td>
+    </tr>
+
+    <tr><td>Data fim do intervalo:</td>
+      <td><%= f.date_select(:data_fim, :order => [:day, :month, :year], :default => {:day => dia_fim, :month => mes_fim, :year => ano_fim}) %></td>
+    </tr>
+
+    <tr><td>
+        <%= f.submit "Calcular" %>
+      </td></tr>
+
+  <% end %>
+</table>
+
+
+<hr/>
+
+<% if @idx then %>
+
+<br/>
+<b>Poupança antes da MP:</b></br>
+Índice de correção = <%= @idx  %> %</br>
+Valor = <%= Biblioteca::format_currency @valor  %></br>
+</br>
+<b>Poupança:</b></br>
+Índice de correção = <%= @idx_mp  %> %</br>
+Valor = <%= Biblioteca::format_currency @valor_mp  %></br>
+
+<% end %>

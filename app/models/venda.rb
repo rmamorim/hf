@@ -14,7 +14,7 @@ class Venda < ActiveRecord::Base
 
 
   def venda_valida?
-    if [51,52,53,65].include? self.cod_status then
+    if [51,52,53,65,76].include? self.cod_status then
       return true
     else
       return false
@@ -143,7 +143,12 @@ class Venda < ActiveRecord::Base
 
     self.promissorias.sort{|a,b| a.data_vencimento <=> b.data_vencimento}.each do |p|
       #v = p.get_valores Time.now
+
+
+
       v = p.get_valores data
+      puts "xxxxxxxx #{p}"
+      puts "xxxxxxxx #{v}"
 
       idx_poupanca = idx_poupanca_contrato = 0
       data_venda = p.venda.get_data_venda
@@ -331,9 +336,9 @@ class Venda < ActiveRecord::Base
 
 
         ##
-        ##  Mensal
+        ##  Mensal, aluguel
         ##
-        when 29
+        when 29, 75
           i_mensal += 1
 
           case p.get_status
@@ -434,7 +439,7 @@ class Venda < ActiveRecord::Base
 
     promissorias.each do |p|
       puts "#{p.num} - #{p.data_vencimento}"
-      p.gera_boleto_automatico
+      p.gera_boleto
     end
   end
 

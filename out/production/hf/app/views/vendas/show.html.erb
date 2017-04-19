@@ -1,0 +1,114 @@
+<h1><%=h @venda.lote.to_label %></h1>
+<table>
+  <tr>
+    <td><%= link_to 'retornar', @venda.lote %></td>
+    <td><%= link_to('editar', :controller => "vendas", :action => "edit", :id => @venda.id) %></td>
+  </tr>
+</table>
+
+<hr/>
+
+<%= error_messages_for :venda %>
+
+
+<table cellpadding="2" cellspacing="0" border="1">
+  <tr>
+    <td>Status:</td>
+    <td><%=h Codigo::get_status(@venda.cod_status) %></td>
+  </tr>
+
+  <tr>
+    <td>Corretor:</td>
+    <td><%=h Codigo::get_status(@venda.cod_corretor) %></td>
+  </tr>
+
+  <tr>
+    <td>Comprador:</td>
+    <td>
+      <% for comprador in @venda.compradors %>
+        <%=h comprador.pessoa.nome %> <br/>
+      <% end %>
+    </td>
+  </tr>
+
+  <tr>
+    <td>Data do contrato:</td>
+    <td> <%=h Biblioteca::format_data(@venda.data_contrato) %> </td>
+  </tr>
+  <tr>
+    <td>Data da escritura:</td>
+    <td> <%=h @venda.data_escritura %> </td>
+  </tr>
+
+  <tr>
+    <td>Valor de venda:</td>
+    <td> <%=h Biblioteca::format_currency @venda.valor %> </td>
+  </tr>
+
+  <tr>
+    <td>Correção monetária:</td>
+    <td> <%=h Codigo::get_status(@venda.tipo_correcao) %> </td>
+  </tr>
+
+  <tr>
+    <td>Dias de carência:</td>
+    <td> <%=h @venda.dias_carencia %> </td>
+  </tr>
+
+  <tr>
+    <td>Multa (% ao mês):</td>
+    <td> <%=h @venda.multa %> </td>
+  </tr>
+
+  <tr>
+    <td>Juros (% ao mês):</td>
+    <td> <%=h @venda.juros %> </td>
+  </tr>
+
+
+</table>
+
+
+<hr/>
+
+<%= link_to("Cadastra promissórias",
+  :controller => "vendas",
+  :action => "cadastra",
+  :id => @venda.id
+)
+%>
+
+
+
+<table cellpadding="2" cellspacing="1" border="1">
+
+  <tr>
+    <th>parcela</th>
+    <th>data</th>
+    <th>tipo</th>
+    <th>valor</th>
+  </tr>
+
+  <%
+
+  @venda.promissorias.sort{|a,b| a.data_vencimento <=> b.data_vencimento}.each do |p|
+  %>
+    <tr>
+      <td><%=h format('%s/%s', p.num, p.num_total) %> </td>
+      <td><%=h Biblioteca::format_data(p.data_vencimento) %></td>
+      <td><%=h Codigo::get_status(p.cod_tipo_parcela) %></td>
+      <td><%=h Biblioteca::format_currency p.valor_original %></td>
+    </tr>
+  <%
+  end
+
+%>
+  <table/>
+
+  <hr/>
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  mes: 2010-11-29
+  indice: 9.99
+
+two:
+  mes: 2010-11-29
+  indice: 9.99

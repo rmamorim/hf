@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  ordem: 1
+  pessoa: 
+  venda: 
+
+two:
+  ordem: 1
+  pessoa: 
+  venda: 

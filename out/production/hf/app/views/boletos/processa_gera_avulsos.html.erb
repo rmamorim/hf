@@ -1,0 +1,64 @@
+<h1>Resultado de: Gera boletos avulsos</h1>
+
+
+<%= error_messages_for :boleto %>
+
+
+<%= @busca.class %>
+<br/>
+<%= @busca %>
+<br/>
+<%= @r.class %>
+<br/>
+<%= @r %>
+<br/>
+
+
+<br/>
+<hr/>
+
+
+<%  @r.to_a.each do |e| %>
+    <%= e %>
+    <br/>
+<%   end %>
+
+
+
+<br/>
+<hr/>
+
+<table cellpadding="2" cellspacing="1" border="1">
+
+  <%
+  @boletos.sort{|a,b| b.attributes['id'] <=> a.attributes['id']}.each do |boleto|
+  %>
+    <tr>
+      <td><%= boleto.seu_numero %> </td>
+      <td><%= Codigo.get_status boleto.promissoria.cod_tipo_parcela %> </td>
+      <td><%= boleto.nosso_numero %> </td>
+      <td><%= boleto.data_vencimento.to_date %> </td>
+      <td><%= boleto.promissoria.data_vencimento %> </td>
+      <td><%= boleto.valor_titulo.to_currency (:locale => :en) %> </td>
+    </tr>
+  <%  end %>
+</table>
+
+
+<br/>
+<hr/>
+
+<table cellpadding="2" cellspacing="1" border="1">
+  <%
+  @promissorias.sort{|a,b| b.attributes['id'].nil? ? 0 : b.attributes['data_vencimento'] <=> a.attributes['data_vencimento']}.each do |p|
+  %>
+    <tr>
+      <td><%= p.venda.lote.to_label %> </td>
+      <td><%= "#{p.num}-#{p.num_total}" %> </td>
+      <td><%= Codigo.get_status p.cod_tipo_parcela %> </td>
+      <td><%= p.data_vencimento %> </td>
+      <td><%= Codigo.get_status p.cod_status %> </td>
+
+    </tr>
+  <%  end %>
+</table>

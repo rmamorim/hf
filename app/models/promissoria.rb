@@ -254,8 +254,8 @@ class Promissoria < ActiveRecord::Base
     @dias_atraso = (dt - self.data_vencimento).to_i
     valor_original = self.valor_original
 
-    (data = self.data_vencimento) if [27, 28].include?(self.cod_tipo_parcela)  ## 27- entrada 28- intermediaria
-    (data = self.get_data_reajuste_promissoria_mensal) if (self.cod_tipo_parcela == 29)  ##  Analisar get_data_reajuste_promissoria_mensal
+    (data = self.data_vencimento) if [27,28,67,75].include?(self.cod_tipo_parcela)  ## 27- entrada 28- intermediaria 67- quitação 75- aluguel
+    (data = self.get_data_reajuste_promissoria_mensal) if [29,77].include?(self.cod_tipo_parcela)  ##  29- mensal  77- fracionamento     Analisar get_data_reajuste_promissoria_mensal
     correcao = calcula_correcao data
     @valor_vencimento = correcao[:valor_titulo]
 
@@ -279,8 +279,8 @@ class Promissoria < ActiveRecord::Base
           @valor_data_mora = @valor_vencimento
         end
     else
-        entrada_intermediaria_quitacao_paga if [27, 28, 67].include?(self.cod_tipo_parcela)
-        mensal_paga if self.cod_tipo_parcela == 29
+        entrada_intermediaria_quitacao_paga if [27,28,67,75].include?(self.cod_tipo_parcela)
+        mensal_paga if [29,77].include?(self.cod_tipo_parcela)
     end
 
 
@@ -549,6 +549,11 @@ class Promissoria < ActiveRecord::Base
         tipo_parcela = '3'
       when 67
         tipo_parcela = '4'
+      when 75
+        tipo_parcela = '5'
+      when 77
+        tipo_parcela = '6'
+
       else
         tipo_parcela = '0'
     end
@@ -759,8 +764,7 @@ class Promissoria < ActiveRecord::Base
 
     messes_correc = self.num.to_i * periodo
     dt_fim = format("'%s'", self.data_vencimento.to_s)
-    idxs = Idxpoupanca.all(:conditions => "mes between '1900-01-01' and " + dt_fim,
-                           :order => "mes DESC")
+    idxs = Idxpoupanca.where("mes between '1900-01-01' and " + dt_fim).order("mes DESC")
     idx = 1
     cont = 1
     idxs.each do |i|
@@ -853,10 +857,22 @@ class Promissoria < ActiveRecord::Base
 
 
   def get_valor_data_vencimento_original
-    boleto = Boleto.new
-    data_primeira_periodo = self.get_data_reajuste_promissoria_mensal
-    set_correcao boleto, Biblioteca::date2time(data_primeira_periodo)
-    return boleto.valor_titulo
+
+
+    puts self.class
+    puts self.id
+    puts self.to_s
+
+
+    if self.correc_poup then
+      boleto = Boleto.new
+      data_primeira_periodo = self.get_data_reajuste_promissoria_mensal
+      set_correcao boleto, Biblioteca::date2time(data_primeira_periodo)
+      return boleto.valor_titulo
+    else
+      return self.valor_original
+    end
+
   end
 
 
@@ -966,7 +982,7 @@ class Promissoria < ActiveRecord::Base
     AND (strftime('%Y-%m-%d', data_vencimento) < '#{Time.now.months_ago(1).to_s(:db)[0, 10]}')
 SQL_TYPE
 
-    promissorias = Promissoria.all(:conditions => cond)
+    promissorias = Promissoria.where(cond)
     promissorias.each do |prom|
       promissorias_atrasadas << prom if !prom.pago?
     end
@@ -996,7 +1012,7 @@ SQL_TYPE
     AND (strftime('%Y-%m-%d', data_vencimento) < '#{Time.now.months_ago(1).to_s(:db)[0, 10]}')
 SQL_TYPE
 
-    promissorias = Promissoria.all(:conditions => cond)
+    promissorias = Promissoria.where(cond)
     promissorias.each do |prom|
       promissorias_atrasadas << prom if !prom.pago?
     end
@@ -1089,7 +1105,7 @@ SQL_TYPE
 
 ###
 ###
-### Nova versão
+### Nova versão - ATUAL
 ###
 ###
   def gera_boletos_mes_new ano, mes
@@ -1097,7 +1113,7 @@ SQL_TYPE
     promissorias_mes = []
 
     #cond = cond_promissoria_para_reajustar ano, mes
-    #promissorias = Promissoria.all(:conditions => cond)
+    #promissorias = Promissoria.where(ond)
 
     promissorias = Promissoria.select('p.*'). \
       where("(strftime('%Y-%m', data_vencimento) = '#{Time::local(ano,mes,1).to_s(:db)[0,7]}') \
@@ -1119,7 +1135,7 @@ SQL_TYPE
       and num_total = #{p.num_total}
       and (num between #{p.num + 1} and #{p.num + periodo - 1} )
 SQL_TYPE
-          proms_intervalo = Promissoria.all(:conditions => cond)
+          proms_intervalo = Promissoria.where(cond)
           proms_intervalo.each do |p_intervalo|
             promissorias_mes.push(p_intervalo) if p_intervalo.eh_para_imprimir_boleto?
           end
@@ -1139,22 +1155,28 @@ SQL_TYPE
     ## Gera boletos para as promissórias
 
     boletos = []
-    conjunto_promissorias.each do |p|
-      boletos << p.gera_boleto_automatico
+    ## Ordena promissorias - não está correto!!!
+    prom_ordenadas = conjunto_promissorias.sort_by { |a| [a.venda.lote.numero, a.data_vencimento] }
+
+    prom_ordenadas.each do |p|
+      ### - Por que precisa colocar options :vincendo ?
+      options = {}
+      options[:tipo_boleto] = :vincendo
+      boletos << p.gera_boleto(options)
     end
 
-
-
-    ## Ordena promissorias
-    a = conjunto_promissorias.sort_by { |a| [a.venda.lote.numero, a.data_vencimento] }
     return boletos
 
   end
 
 
+
+
+
+
   ###
   ###
-  ### Versão 2 - atual
+  ### Versão 2
   ###
   ###
   def gera_boletos_mesb ano, mes
@@ -1448,13 +1470,42 @@ SQL_TYPE
 
 
 
+
+def gera_boleto_vincendo3 options = {}
   # Options:
   # dias_para_pagar_apos_emissao
   # options[:dias_permitido_receber] default = 90
   # options[:data_vencimento]
 
+  boleto = Boleto.new()
+  boleto.promissoria_id = self.id
+  boleto.status = 38 # Boleto não pago
+  boleto.data_emissao = Time.now.to_date
+  boleto.valor_original = self.valor_original
+  boleto.dias_permitido_receber = options[:dias_permitido_receber].nil? ? 90 : options[:dias_permitido_receber]
+  data_base = options[:data_vencimento].nil? ? Biblioteca::date2time(self.data_vencimento).to_date : options[:data_vencimento]
+  boleto.data_vencimento = data_base
+  boleto.cod_sac = venda.get_cod_sacado
+  boleto.seu_numero = self.gera_seu_numero
+  boleto.gera_nosso_numero
+
+  v = self.get_valores data_base
+
+
+
+end
+
+
+
+
+
 
 def gera_boleto_vincendo2 options = {}
+  # Options:
+  # dias_para_pagar_apos_emissao
+  # options[:dias_permitido_receber] default = 90
+  # options[:data_vencimento]
+
 
     boleto = Boleto.new()
     boleto.promissoria_id = self.id
@@ -1933,285 +1984,147 @@ def gera_boletob tipo_boleto, data_vencimento, data_base
 end
 
 
-##
-## Versão 1 - antiga
-##
-def gera_boleto data_emissao, data_vencimento, tipo_boleto
-  ##
-  ## tipo_boleto
-  ##
-  ##  1 - Antigos (Hansa Fly)
-  ##  2 - Cristina Amaral
-  ##  3 - LSA
-  ##
-  ##  4 - Atrasados
-  ##  5 - Intermediarias
-  ##  6 - Antigos (Hansa Fly) com juros e sem 30 dias
-  ##
 
 
-  if tipo_boleto == 0 then
-    puts ">>> ERRO: tipo de boleto inválido!"
-    return
+
+##
+## NOVA Versão
+##
+
+def gera_boleto options = {}
+  # Options:
+  # dias_para_pagar_apos_emissao
+  # options[:tipo_boleto]
+  # options[:dias_permitido_receber] default = 90
+  # options[:data_vencimento]
+
+  #puts "options[:tipo_boleto] = #{options[:tipo_boleto]}"
+  #puts "situacao = #{self.get_situacao}"
+  if options[:tipo_boleto].nil? then
+    case self.get_situacao
+      when :vincenda, :mora
+        #puts "1"
+        options[:tipo_boleto] = :vincendo
+      when :atrasada
+        #puts "2"
+        options[:tipo_boleto] = :vencido
+      else
+        #puts "3"
+        options[:tipo_boleto] = :vencido
+    end
   end
+  #puts "tipo_boleto = #{options[:tipo_boleto]}"
 
-  #printf "Tipo boleto = %s\n", tipo_boleto
+#  boleto = gera_boleto_vincendo2 options
+#  boleto = gera_boleto_vencido options
 
 
   boleto = Boleto.new()
-
   boleto.promissoria_id = self.id
   boleto.status = 38 # Boleto não pago
-  boleto.data_emissao = (data_emissao.strip == "" ? DateTime.now.strftime("%Y-%m-%d") : data_emissao)
+  boleto.data_emissao = Time.now.to_date
   boleto.valor_original = self.valor_original
 
-  if data_vencimento.strip == "" then
-    data_vencimento = self.data_vencimento
+  if !options[:data_vencimento].nil? then
+    data_base = options[:data_vencimento]
+  else
+    data_base = Biblioteca::date2time(self.data_vencimento).to_date if options[:tipo_boleto] == :vincendo
+    if options[:tipo_boleto] == :vencido then
+      options[:tipo_boleto] = :vincendo if (Time.now.to_date - (Biblioteca::date2time(self.data_vencimento).to_date)) <= 30
+      data_base = Time.now.to_date + 5
+    end
   end
-  case tipo_boleto
-    when 1
-      piso = 15
-    when 2
-      piso = 1
-    when 3
-      piso = 1
-    when 4
-      piso = 1
-    when 5
-      piso = 1
-    when 6
-      piso = 15
+  #puts "data_base = #{data_base}"
+  v = self.get_valores data_base
+
+  default_dias_permitido_receber = (options[:tipo_boleto]  == :vincendo ? 90 : 0)
+  boleto.dias_permitido_receber = (options[:dias_permitido_receber].nil? ? default_dias_permitido_receber : options[:dias_permitido_receber])
+
+  boleto.data_vencimento = data_base
+
+  boleto.cod_sac = venda.get_cod_sacado
+  boleto.seu_numero = self.gera_seu_numero
+  boleto.gera_nosso_numero
+
+
+##
+## Calcula correcao e valor do boleto
+##
+  if !options[:valor].nil? then
+    valor = (options[:valor]).to_f
+    boleto.valor_titulo = valor
+    boleto.perc_poup = valor / v[:valor_original]
+    boleto.atualizacao = valor - v[:valor_original]
+  else
+    if options[:tipo_boleto] == :vincendo then
+      boleto.valor_titulo = Biblioteca::arredonda_float(v[:valor_vencimento], 2)
+      boleto.perc_poup = v[:valor_vencimento] / v[:valor_original]
+      boleto.atualizacao = v[:valor_vencimento] - v[:valor_original]
     else
-      piso = 1
-  end
-  boleto.data_vencimento = Biblioteca::corrige_piso_dia(data_vencimento, piso)
-
-
-  ##
-  ## Fazer atualização automatica do *.mdb
-  ##
-  @cpf = 0
-  self.venda.compradors.each do |comprador|
-    @cpf = comprador.pessoa.cpf
-  end
-  #puts @cod
-  if @cpf.nil? then
-    puts ">>>> NULL"
+      dias_atraso = v[:dias_atraso]
+      boleto.valor_titulo = Biblioteca::arredonda_float(v[:valor_mora], 2)
+      boleto.perc_poup = v[:valor_mora] / v[:valor_original]
+      boleto.atualizacao = v[:valor_mora] - v[:valor_original]
+    end
   end
 
-  boleto.cod_sac = Minha.new.cpf_to_codsac(@cpf)
+#                    "1234567890123456789012345678901234567890"
+  boleto.mensagem1 = "Apos vencimento SOMENTE CEF ou Lotericas"[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vincendo
+  boleto.mensagem1 = "##### Nao receber apos vencimento  #####"[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vencido
 
-  via = self.boletos.size + 1
-  area_nome = self.venda.lote.area.nome
-  lote_numero = self.venda.lote.numero
+  boleto.mensagem2 = "### Lote #{self.venda.lote.to_label} ###"[0..39].strip.ljust(40, ' ')
 
-  if area_nome == "A" and lote_numero == "1" then
-    lote_numero = "123"
-  end
+  boleto.mensagem3 = "HANSA FLY Empreendimentos Imob. Ltda."[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vincendo
+  boleto.mensagem3 = "Pagamento com #{dias_atraso} dias de atraso."[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vencido
+  boleto.mensagem4 = "WhatsApp:(21)99602-3878 adm@hansafly.com"[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vincendo
+  boleto.mensagem4 = "Multa= #{Biblioteca::to_my_moeda(v[:multa])}; Encargos= #{Biblioteca::to_my_moeda(v[:juros]+v[:correcao_monetaria])}"[0..39].ljust(40, ' ') if options[:tipo_boleto] == :vencido
 
-  seu_numero = format("%s-%s-%s/%s", area_nome, lote_numero, self.num, self.num_total)
-  seu_numero = via > 1 ? format("%s.%s", seu_numero, via) : seu_numero
-  boleto.seu_numero = seu_numero
+  boleto.mensagem5 = "-------  NAO RECEBER EM CHEQUE  -------"[0..39].ljust(40, ' ')
 
-  self.set_correcao boleto
-
-
-  if tipo_boleto == 1 then
-    ##
-    ## Hansa Fly
-    ##
-    boleto.mensagem1 = Biblioteca::converte_texto("Receber ate 30 dias atraso sem acrescimo")
-    boleto.mensagem3 = Biblioteca::converte_texto("Pagar: lotericas, rede bancaria")
-    boleto.mensagem4 = Biblioteca::converte_texto("(preferencialmente CEF) ou Hansa Fly")
-    boleto.mensagem5 = Biblioteca::converte_texto("tel: (21)2632-7222,   FAX: (21)2643-3970")
-    boleto.mensagem6 = Biblioteca::converte_texto("e-mail: adm@hansafly.com")
-    men_1 = format("Lote %s-%s", area_nome, lote_numero)
-    if (area_nome == "A" and lote_numero == "1")
-      men_1 = "Lotes A-1,2e3"
-    end
-    if (area_nome == "G" and lote_numero == "")
-      men_1 = "Area G"
-    end
-    if (area_nome == "J" and lote_numero == "58")
-      men_1 = "Lotes J-56g,58a"
-    end
-    men_2 = format("Parc %s/%s", self.num, self.num_total)
-    if via > 1 then
-      men_2 = men_2 + format(" - %ia via", via.to_i)
-    end
-    boleto.mensagem2 = Biblioteca::converte_texto(men_1 + " " + men_2)
-
-    boleto.valor_multa = 0.0
-    boleto.valor_juros = 0.0
-
-    boleto.gera_nosso_numero
-  end
-
-
-  if tipo_boleto == 2 then
-    ##
-    ## Cristina Amaral
-    ##
-
-    boleto.mensagem1 = Biblioteca::converte_texto("1234567890123456789012345678901234567890")
-    boleto.mensagem1 = Biblioteca::converte_texto("Apos vencto pagar na CEF ou Lotericas")
-    boleto.mensagem3 = Biblioteca::converte_texto("Pagar: CEF, Lotericas ou rede bancaria")
-    boleto.mensagem4 = Biblioteca::converte_texto("preferencialmente Lotericas ou CEF")
-    boleto.mensagem5 = Biblioteca::converte_texto("Hansa Fly - tel (21)2643-3970, 9602-3878")
-    boleto.mensagem6 = Biblioteca::converte_texto("e-mail: adm@hansafly.com")
-
-    valor = boleto.valor_titulo.to_f
-    multa = Biblioteca::arredonda_float(valor * self.venda.multa / 100.0, 2)
-    juros = Biblioteca::arredonda_float(valor * self.venda.juros / 100.0 / 30.0, 2)
-
-    boleto.valor_juros = juros
-    boleto.valor_multa = multa
-
-    if cod_tipo_parcela == 29 then
-      tipo_parcela = 'mensal'
-    end
-    if cod_tipo_parcela == 28 then
-      tipo_parcela = 'interm.'
-    end
-    if cod_tipo_parcela == 27 then
-      tipo_parcela = 'entrada'
-    end
-
-    men_1 = format("Lote %s-%s", area_nome, lote_numero)
-    men_2 = format("NP (%s) %s de %s", tipo_parcela, self.num, self.num_total)
-    if via > 1 then
-      men_2 = men_2 + format(" v=%i", via.to_i)
-    end
-    boleto.mensagem2 = men_1 + " ref: " + men_2
-
-    boleto.gera_nosso_numero
-  end
-
-
-  if tipo_boleto == 3 then
-    ##
-    ## LSA
-    ##
-    boleto.mensagem1 = Biblioteca::converte_texto("")
-    boleto.mensagem2 = Biblioteca::converte_texto("")
-    boleto.mensagem3 = Biblioteca::converte_texto("")
-    boleto.mensagem4 = Biblioteca::converte_texto("")
-    boleto.mensagem5 = Biblioteca::converte_texto("")
-    boleto.mensagem6 = Biblioteca::converte_texto("")
-    boleto.valor_multa = 0.0
-    boleto.valor_juros = 0.0
-    boleto.nosso_numero = ""
-  end
-
-
-  if tipo_boleto == 4 then
-    ##
-    ## Atrasados
-    ##
-    boleto.mensagem1 = Biblioteca::converte_texto("")
-    boleto.mensagem2 = Biblioteca::converte_texto("")
-    boleto.mensagem3 = Biblioteca::converte_texto("")
-    boleto.mensagem4 = Biblioteca::converte_texto("")
-    boleto.mensagem5 = Biblioteca::converte_texto("")
-    boleto.mensagem6 = Biblioteca::converte_texto("")
-
-    valor_vencimento = boleto.valor_titulo.to_f
-    multa = Biblioteca::arredonda_float(valor_vencimento * self.venda.multa / 100.0, 2)
-    juros = Biblioteca::arredonda_float(valor_vencimento * self.venda.juros / 100.0 / 30.0, 2)
-
-    dias_atraso= ((Biblioteca::dt_mysql_to_time(boleto.data_emissao.to_s) - Biblioteca::dt_mysql_to_time(self.data_vencimento.to_s)) / 86400).to_i
-    boleto.valor_titulo = valor_vencimento.to_f + multa.to_f + (dias_atraso.to_f * juros.to_f)
-
-    boleto.mensagem1 = Biblioteca::converte_texto("1234567890123456789012345678901234567890")
-    boleto.mensagem1 = Biblioteca::converte_texto("Nao receber apos vencimento.")
-    boleto.mensagem3 = Biblioteca::converte_texto(format("Valor em %s: %s", Biblioteca::dt_mysql_to_s(self.data_vencimento.to_s), Biblioteca::to_my_moeda(valor_vencimento)))
-    boleto.mensagem4 = Biblioteca::converte_texto(format("%s dias de atraso -> Multa: %s", dias_atraso, Biblioteca::to_my_moeda(multa)))
-    boleto.mensagem5 = Biblioteca::converte_texto(format("+ Juros: %s", Biblioteca::to_my_moeda(juros * dias_atraso)))
-    boleto.mensagem6 = Biblioteca::converte_texto("Hansafly: (21)2643-3970 e 9602-3878")
-
-    boleto.valor_juros = 0
-    boleto.valor_multa = 0
-    if cod_tipo_parcela == 29 then
-      tipo_parcela = 'mensal'
-    end
-    if cod_tipo_parcela == 28 then
-      tipo_parcela = 'interm.'
-    end
-    if cod_tipo_parcela == 27 then
-      tipo_parcela = 'entrada'
-    end
-    men_1 = format("Lote %s-%s", area_nome, lote_numero)
-    men_2 = format("NP (%s) %s de %s", tipo_parcela, self.num, self.num_total)
-    if via > 1 then
-      men_2 = men_2 + format(" v=%i", via.to_i)
-    end
-    boleto.mensagem2 = men_1 + " ref: " + men_2
-    boleto.gera_nosso_numero
+  msg_via = (get_via > 1 ? " - #{get_via}a via" : "")
+  case cod_tipo_parcela
+    when 29
+      tipo_parcela = "#{self.venda.lote.to_label}: NP(mensal) #{self.num} de #{self.num_total}#{msg_via}"
+    when 28
+      tipo_parcela = "#{self.venda.lote.to_label}: NP(interm.) #{self.num} de #{self.num_total}#{msg_via}"
+    when 27
+      tipo_parcela = "#{self.venda.lote.to_label}: NP(entrada) #{self.num} de #{self.num_total}#{msg_via}"
+    when 67
+      tipo_parcela = "## #{self.venda.lote.to_label}: PARCELA ESPECIAL DE QUITAÇÃO ##"
+    when 75
+      mes = "#{Biblioteca.mes2nome self.data_vencimento.beginning_of_month.prev_month.month}/#{self.data_vencimento.beginning_of_month.prev_month.year}"
+      tipo_parcela = "## Casa(#{self.venda.lote.to_label}): Aluguel #{mes} ##"
+    when 77
+      tipo_parcela = "#{self.venda.lote.to_label}: 75% de NP(mensal) - ESP ##{self.num} #{msg_via}"
 
   end
-
-  if tipo_boleto == 5 then
-    ##
-    ## Intermediarias
-    ##
-    boleto.mensagem1 = Biblioteca::converte_texto("")
-    boleto.mensagem2 = Biblioteca::converte_texto("")
-    boleto.mensagem3 = Biblioteca::converte_texto("")
-    boleto.mensagem4 = Biblioteca::converte_texto("")
-    boleto.mensagem5 = Biblioteca::converte_texto("")
-    boleto.mensagem6 = Biblioteca::converte_texto("")
-    boleto.valor_multa = 0.0
-    boleto.valor_juros = 0.0
-    boleto.nosso_numero = ""
-  end
-
-  if tipo_boleto == 6 then
-    ##
-    ## 6 - Antigos (Hansa Fly) com juros e sem 30 dias
-    ##
-
-    boleto.mensagem1 = Biblioteca::converte_texto("1234567890123456789012345678901234567890")
-    boleto.mensagem1 = Biblioteca::converte_texto("Cobrar multa/juros apos 5 dias de atraso")
-    boleto.mensagem3 = Biblioteca::converte_texto("Pagar: CEF, Lotericas ou rede bancaria")
-    boleto.mensagem4 = Biblioteca::converte_texto("Preferencialmente Lotericas ou CEF")
-    boleto.mensagem5 = Biblioteca::converte_texto("Hansa Fly - tel (21)2643-3970, 9602-3878")
-    boleto.mensagem6 = Biblioteca::converte_texto("e-mail: adm@hansafly.com")
+  boleto.mensagem6 = "#{tipo_parcela}"[0..39].ljust(40, ' ')
 
 
-    men_1 = format("Lote %s-%s", area_nome, lote_numero)
-    if (area_nome == "A" and lote_numero == "1")
-      men_1 = "Lotes A-1,2e3"
-    end
-    if (area_nome == "G" and lote_numero == "")
-      men_1 = "Area G"
-    end
-    if (area_nome == "J" and lote_numero == "58")
-      men_1 = "Lotes J-56g,58a"
-    end
-    men_2 = format("Parc %s/%s", self.num, self.num_total)
-    if via > 1 then
-      men_2 = men_2 + format(" - %ia via", via.to_i)
-    end
-    boleto.mensagem2 = Biblioteca::converte_texto(men_1 + " " + men_2)
 
 
-    valor = boleto.valor_titulo.to_f
-    multa = Biblioteca::arredonda_float(valor * self.venda.multa / 100.0, 2)
-    juros = Biblioteca::arredonda_float(valor * self.venda.juros / 100.0 / 30.0, 2)
-
-    boleto.valor_juros = juros
-    boleto.valor_multa = multa
 
 
-    boleto.gera_nosso_numero
-  end
-
+##
+## Calcula juros/multa a cobrar no boleto em caso de pagamento apos o vencimento
+##
+  valor = boleto.valor_titulo
+  boleto.valor_juros = Biblioteca::arredonda_float(valor * self.venda.juros / 100.0 / 30.0, 2)
+  boleto.valor_multa = Biblioteca::arredonda_float(valor * self.venda.multa / 100.0, 2)
 
   boleto.save
-  #boleto.print
+  boleto.gera_sql_sicob
+  return boleto
+
+
+
+
+
+
 
   return boleto
 end
+
 
 
 def Promissoria.get_promissoria slote, sparcela

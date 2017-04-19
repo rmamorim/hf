@@ -1,0 +1,40 @@
+<h2> <%=h format("Faturamento em %s/%s => (%s)", @month, @year, Biblioteca::to_my_moeda(@total)) %></h2>
+
+
+
+<table border="1">
+  <tr>
+    <th>Área</th>
+    <th>Quadra</th>
+    <th>Lote</th>    
+    <th>Parcela</th>
+    <th>Num_total</th>
+    <th>Tipo</th>
+    <th>Status</th>
+    <th>Data vencimento</th>
+    <th>Data pagamento</th>
+    <th>Valor título</th>
+    <th>Valor pago</th>
+  </tr>
+
+
+<%  @lista.each do |l| %>
+
+  <tr>
+    <td> <%=  l[0] %> </td>
+    <td> <%=  l[1] %> </td>
+    <td> <%=  l[2] %> </td>
+    <td> <%=  l[3] %> </td>
+    <td> <%=  l[4] %> </td>
+    <td> <%=  l[5] %> </td>
+    <td> <%=  l[6] %> </td>
+    <td> <%=  l[7] %> </td>
+    <td> <%=  l[8] %> </td>
+    <td> <%=  l[9] %> </td>
+    <td> <%=  l[10] %> </td>
+  </tr>
+
+<% end %>
+
+
+</table>

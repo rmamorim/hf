@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  num: 1
+  num_total: 1
+  correc_poup: false
+  data_vencimento: 2010-11-29
+  cod_status: 1
+  cod_tipo_parcela: 1
+  valor_original: 9.99
+  venda: 
+
+two:
+  num: 1
+  num_total: 1
+  correc_poup: false
+  data_vencimento: 2010-11-29
+  cod_status: 1
+  cod_tipo_parcela: 1
+  valor_original: 9.99
+  venda: 

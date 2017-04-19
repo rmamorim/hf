@@ -1,0 +1,24 @@
+<h1>Cadastro de Pessoas</h1>
+
+<table>
+  <tr>
+    <th>CPF</th>
+    <th>Nome</th>
+    <th>Endereço</th>
+  </tr>
+
+<% @pessoas.sort{|a,b| a.nome <=> b.nome}.each do |pessoa| %>
+  <tr>
+    <td><%= pessoa.cpf %></td>
+    <td><%= pessoa.nome %></td>
+    <td><%= pessoa.endereco %></td>
+    <td><%= link_to 'Show', pessoa %></td>
+    <td><%= link_to 'Edit', edit_pessoa_path(pessoa) %></td>
+    <td><%= link_to 'Destroy', pessoa, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nova Pessoa', new_pessoa_path %>

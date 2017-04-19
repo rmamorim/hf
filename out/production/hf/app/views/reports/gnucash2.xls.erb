@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Data</Data></Cell>
+        <Cell><Data ss:Type="String">Transação</Data></Cell>
+        <Cell><Data ss:Type="String">Crédito</Data></Cell>
+        <Cell><Data ss:Type="String">Débito</Data></Cell>
+        <Cell><Data ss:Type="String">Saldo</Data></Cell>
+      </Row>
+      <% @l.each do |coluna| %>
+          <Row>
+            <Cell><Data ss:Type="String"><%= coluna[0] %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= coluna[1] %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= coluna[2] %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= coluna[3] %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= coluna[4] %></Data></Cell>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

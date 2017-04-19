@@ -1,0 +1,114 @@
+<h2>Clientes com parcelas em atraso</h2>
+
+<table border="1">
+  <tr>
+    <th>Lote</th>
+    <th>Cliente</th>
+
+    <th>..</th>
+    <th>Ent</th>
+    <th>Men</th>
+    <th>Int</th>
+
+    <th>..</th>
+    <th>pag</th>
+    <th>vin</th>
+    <th>atr</th>
+    <th>+90</th>
+    <th>---</th>
+
+    <th>..</th>
+    <th>pag</th>
+    <th>vin</th>
+    <th>atr</th>
+    <th>+90</th>
+    <th>---</th>
+
+    <th>..</th>
+    <th>pag</th>
+    <th>vin</th>
+    <th>atr</th>
+    <th>+90</th>
+    <th>---</th>
+
+    <th>..</th>
+    <th>pag</th>
+    <th>vin</th>
+    <th>atr</th>
+    <th>+90</th>
+    <th>---</th>
+    
+  </tr>
+
+
+<!--  
+      @lista.sort{|b,a| a[7][3] <=> b[7][3]}.each do |l|
+
+      @lista.sort{|b,a| a[6][2] <=> b[6][2]}.each do |l|
+      
+-->
+
+
+<% @lista.sort{|b,a| a[7][3] <=> b[7][3]}.each do |l| %>
+
+
+  <%
+  lote = l[0]
+  entrada = l[4]
+  mensal = l[5]
+  intermediaria = l[6]
+  geral = l[7]
+
+  s_entrada = format("[%s %s %s %s %s]", entrada[0], entrada[1], entrada[2], entrada[3], entrada[4])
+  s_mensal = format("[%s %s %s %s %s]", mensal[0], mensal[1], mensal[2], mensal[3], mensal[4])
+  s_intermediaria = format("[%s %s %s %s %s]", intermediaria[0], intermediaria[1], intermediaria[2], intermediaria[3], intermediaria[4])
+  s_geral = format("[%s %s %s %s %s]", geral[0], geral[1], geral[2], geral[3], geral[4])
+
+  %>
+  <tr>
+    <td><%= Biblioteca::format_area_lote lote.area.nome, lote.numero %></td>
+    <td><%= lote.get_nome_comprador %>    </td>
+
+    <td align ="right"> <%=  %>  </td>
+    <td align ="right"> <%= l[1] %>  </td>
+    <td align ="right"> <%= l[2] %>  </td>
+    <td align ="right"> <%= l[3] %>  </td>
+    
+    <td align ="right"> <%=  %>  </td>
+    <td align ="right" bgcolor="lightgreen"> <%= entrada[0] %>  </td>
+    <td align ="right" bgcolor="yellow"> <%= entrada[1] %>  </td>
+    <td align ="right" bgcolor="orange"> <%= entrada[2] %>  </td>
+    <td align ="right" bgcolor="pink"> <%= entrada[3] %>  </td>
+    <td align ="right" bgcolor="lightgray"> <%= entrada[4] %>  </td>
+
+    <td align ="right"> <%=  %>  </td>
+    <td align ="right" bgcolor="lightgreen"> <%= mensal[0] %>  </td>
+    <td align ="right" bgcolor="yellow"> <%= mensal[1] %>  </td>
+    <td align ="right" bgcolor="orange"> <%= mensal[2] %>  </td>
+    <td align ="right" bgcolor="pink"> <%= mensal[3] %>  </td>
+    <td align ="right" bgcolor="lightgray"> <%= mensal[4] %>  </td>
+
+    <td align ="right"> <%=  %>  </td>
+    <td align ="right" bgcolor="lightgreen"> <%= intermediaria[0] %>  </td>
+    <td align ="right" bgcolor="yellow"> <%= intermediaria[1] %>  </td>
+    <td align ="right" bgcolor="orange"> <%= intermediaria[2] %>  </td>
+    <td align ="right" bgcolor="pink"> <%= intermediaria[3] %>  </td>
+    <td align ="right" bgcolor="lightgray"> <%= intermediaria[4] %>  </td>
+
+    <td align ="right"> <%=  %>  </td>
+    <td align ="right" bgcolor="lightgreen"> <%= geral[0] %>  </td>
+    <td align ="right" bgcolor="yellow"> <%= geral[1] %>  </td>
+    <td align ="right" bgcolor="orange"> <%= geral[2] %>  </td>
+    <td align ="right" bgcolor="pink"> <%= geral[3] %>  </td>
+    <td align ="right" bgcolor="lightgray"> <%= geral[4] %>  </td>
+
+    
+  </tr>
+<% end %>
+</table>
+
+
+
+<br />
+
+

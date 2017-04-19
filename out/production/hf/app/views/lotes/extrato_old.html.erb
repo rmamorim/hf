@@ -1,0 +1,152 @@
+<%
+
+puts 'xxxxxxxx'
+puts 'xxxxxxxx'
+puts @lote
+puts @lote.to_label
+puts @lote.get_venda
+puts @lote.get_venda.get_extrato
+puts 'zzzzzzzzz'
+
+venda = @lote.get_venda
+if !venda.nil?
+  dados = venda.get_extrato
+end
+
+%>
+
+
+<p>
+  <%= link_to('Retornar', :controller => "lotes", :action => "index", :area_id => @lote.area.id) %>
+</p>
+<br/>
+
+<%
+if @lote.get_venda.nil? then
+  vendido = false
+else
+  vendido = true
+end
+%>
+
+
+<table cellpadding="0" cellspacing="0" border="1" class="ricardo">
+
+  <tr>
+    <td><b>Lote</b></td>
+    <td align="center"><%=h @lote.area.nome + "-" + @lote.numero.to_s + @lote.subdivisao.to_s %></td>
+  </tr>
+
+  <tr>
+    <td><b>Status</b></td>
+    <td align="center"><%=h Codigo::get_status(@lote.cod_status_access) %></td>
+  </tr>
+
+  <tr>
+    <td><b>Superficie m2</b></td>
+    <td align="right"><%=h @lote.superficie %></td>
+  </tr>
+
+  <tr>
+    <td><b>Inscrição PMG</b></td>
+    <td align="right"><%=h @lote.inscricao_pmg %></td>
+  </tr>
+
+
+  <% if vendido then %>
+    <tr>
+      <td><b>Comprador</b></td>
+      <td><%=h @lote.get_nome_comprador %></td>
+    </tr>
+
+    <tr>
+      <td><b>Data do contrato</b></td>
+      <td align="center"> <%=h Biblioteca::format_data(@lote.get_venda.get_data_venda) %></td>
+    </tr>
+
+    <tr>
+      <td><b>Valor de Venda</b></td>
+      <td align="right"> <%=h Biblioteca::format_currency venda.valor %></td>
+    </tr>
+
+    <tr>
+      <td><b>Entrada</b></td>
+      <td align="right"> <%=h Biblioteca::format_currency dados[:soma][:entrada] %> </td>
+    </tr>
+
+    <tr>
+      <td><b>Parcelas</b></td>
+      <td align="center"><%=h @lote.get_venda.get_num_parcelas %></td>
+    </tr>
+  <% end %>
+
+
+  <tr>
+    <td>Valor pago</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:valor_pago] %></td>
+  </tr>
+
+  <tr>
+    <td>Diferença pagamento</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:diferenca_pagamento] %></td>
+  </tr>
+
+  <tr>
+    <td>Saldo devedor - Total</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:saldo_devedor] %></td>
+  </tr>
+
+  <tr>
+    <td>Parcelas Atrasadas</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:saldo_atrasada] %></td>
+  </tr>
+
+  <tr>
+    <td>Parcelas Vincendas</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:saldo_vincenda] %></td>
+  </tr>
+
+  <tr>
+    <td>Parcelas Vencidas  - Mora</td>
+    <td align="right"><%=h Biblioteca::format_currency dados[:soma][:saldo_mora] %></td>
+  </tr>
+
+
+
+</table>
+
+
+
+
+<hr/>
+<br/>
+
+<table cellpadding="2" cellspacing="1" border="1">
+  <tr>
+    <%
+    titulos = dados[:titulos]
+    titulos.each do |t|
+    %>
+      <th> <%=h t %> </th>
+    <%  end %>
+  </tr>
+
+
+  <%
+  linhas = dados[:linhas]
+  linhas.each do |linha|
+  %>
+    <tr>
+    <%
+    linha.each do |coluna|
+    %>
+    <td> <%=h coluna %> </td>
+    <%  end %>
+    </tr>
+  <%  end %>
+
+</table>
+
+
+
+
