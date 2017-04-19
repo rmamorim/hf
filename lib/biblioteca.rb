@@ -1,6 +1,6 @@
 # coding: utf-8
 
-#require 'win32ole'
+## require 'win32ole'
 require 'fileutils'
  
 
